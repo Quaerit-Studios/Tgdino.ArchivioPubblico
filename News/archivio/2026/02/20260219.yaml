@@ -1,0 +1,26 @@
+news:
+  - id: 1
+    title: "Olimpiadi Invernali - Il cane Nazgul invade la pista e taglia il traguardo"
+    description: | 
+      Fuoriprogramma a quattro zampe sulla neve olimpica! Il vivace cane lupo cecoslovacco di due anni, è sfuggito ai controlli ed è irrotto nel bel mezzo della pista di sci di fondo. 
+      Ad avventura conclusa Nazgul è stato subito recuperato e riportato nella sua casa poco distante.
+    links:
+      - "https://www.instagram.com/p/DU6mn9-iVTu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+  
+  - id: 2
+    title: "The Elder Scrolls 6 - Ritorno alle origini per Bethesda"
+    description: | 
+      Dopo le recenti "deviazioni creative" di Fallout 76 e Starfield, Bethesda fa un passo indietro per guardare al futuro. 
+      In una recente intervista, il director Todd Howard ha confermato che The Elder Scrolls 6 segnerà un gradito ritorno al "classico stile" della compagnia, riabbracciando la formula esplorativa densa e immersiva che ha reso leggendari titoli come Skyrim e Oblivion. 
+      Howard ha inoltre svelato che il gioco girerà sul nuovo motore grafico Creation Engine 3 e che, pur essendo ancora lontano dalla data d'uscita, ha appena superato un importante traguardo interno diventando ufficialmente giocabile all'interno degli studi.
+    links:
+      - "https://www.instagram.com/p/DU8GxBEjI0c/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+
+  - id: 3
+    title: "Microsoft Project Silica: 4,8 Terabyte in un pezzo di vetro per 10.000 anni"
+    description: | 
+      Un singolo pezzetto di vetro (grande appena 120x120x2 millimetri) può ora contenere fino a 4,8 TB di dati, sessanta volte in più rispetto ai primi test. 
+      La tecnologia: speciali laser a femtosecondi incidono le informazioni alterando la struttura del vetro, creando microscopici "voxel" (l'equivalente 3D dei pixel) distribuiti su ben 301 strati interni. 
+      Archivi eterni: i dati non richiedono alcuna alimentazione per essere mantenuti e non temono il degrado. I test dimostrano che possono sopravvivere intatti per oltre 10mila anni, rendendo questo supporto il Santo Graal per la conservazione a lunghissimo termine di archivi storici, culturali e scientifici.
+    links:
+      - "https://multiplayer.it/notizie/microsoft-supporto-vetro-conserva-dati-10000-anni-realta-contiene-tb.html"
