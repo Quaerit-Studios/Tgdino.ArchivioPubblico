@@ -1,0 +1,21 @@
+- id: 1
+  title: "Notizia Random 1"
+  description: |
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+  links:
+    - "https://www.instagram.com/p/DWAIFgzjdY1/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+
+- id: 2
+  title: "Notizia Random 2"
+  description: |
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+  links:
+    - "https://youtu.be/aBlsrtxuwss?si=ybnkun5WmyJtay-B"
+
+- id: 3
+  title: "Notizia Random 3"
+  description: |
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+
+  links:
+    - "https://multiplayer.it/notizie/samsung-interrompe-le-vendite-del-galaxy-z-trifold-dopo-soli-tre-mesi.html"
