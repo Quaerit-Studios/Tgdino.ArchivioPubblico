@@ -1,21 +1,24 @@
 - id: 1
-  title: "Notizia Random 1"
+  title: "Gli Incredibili 3 - Uscita ufficiale fissata per l'estate 2028"
   description: |
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+    Durante l'annuale conferenza con gli azionisti della Walt Disney Company, 
+    il neo-CEO Josh D'Amaro ha svelato ufficialmente la data di uscita nelle sale del Gli Incredibili 3 targato Pixar. 
+    La famiglia di supereroi Parr tornerà sul grande schermo il 16 giugno 2028, a quasi dieci anni esatti di distanza dal successo del secondo capitolo.
   links:
-    - "https://www.instagram.com/p/DWAIFgzjdY1/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+  - "https://www.instagram.com/p/DWCs4iiCQBn/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
 
 - id: 2
-  title: "Notizia Random 2"
+  title: "Spider-Man: Beyond the Spider-Verse, i produttori assicurano l’uscita per il 2027"
   description: |
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+    Phil Lord e Chris Miller hanno rotto il silenzio su l'atteso capitolo conclusivo dell'epopea di Miles Morales. 
+    Nonostante le passate preoccupazioni sui tempi di sviluppo, il duo ha rassicurato i fan garantendo che la produzione di Spider-Man: Beyond the Spider-Verse sta procedendo regolarmente e che il film rispetterà la data d'uscita fissata per il 2027.
   links:
-    - "https://youtu.be/aBlsrtxuwss?si=ybnkun5WmyJtay-B"
+  - "https://www.instagram.com/p/DWEGJTdla2e/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
 
 - id: 3
-  title: "Notizia Random 3"
+  title: "Sonic 4 - Confermato il ritorno di Shadow e del Dr. Robotnik"
   description: |
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-
+    Dopo gli eventi del terzo capitolo, la conferma di questi due personaggi promette di alzare ulteriormente la posta in gioco per il riccio blu. 
+    I fan possono prepararsi a nuove battaglie e a un'espansione del franchise cinematografico che continua a omaggiare l'universo videoludico di SEGA.
   links:
-    - "https://multiplayer.it/notizie/samsung-interrompe-le-vendite-del-galaxy-z-trifold-dopo-soli-tre-mesi.html"
+  - "https://youtu.be/YShjCIA9aXk?si=zQO4NqFjW29HV4W0"
