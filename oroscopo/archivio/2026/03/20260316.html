@@ -835,10 +835,16 @@
             }
             resize() {
                 const dpr = window.devicePixelRatio || 1;
-                this.width = window.innerWidth; this.height = window.innerHeight;
-                this.canvas.width = this.width * dpr; this.canvas.height = this.height * dpr;
-                this.canvas.style.width = `${this.width}px`; this.canvas.style.height = `${this.height}px`;
-                this.ctx.scale(dpr, dpr); this.particles.resize(this.width, this.height); this.createScanlinesPattern();
+                // Usa le dimensioni del canvas/container, non della window
+                this.width = this.canvas.offsetWidth || window.innerWidth;
+                this.height = this.canvas.offsetHeight || window.innerHeight;
+                this.canvas.width = this.width * dpr;
+                this.canvas.height = this.height * dpr;
+                this.canvas.style.width = `${this.width}px`;
+                this.canvas.style.height = `${this.height}px`;
+                this.ctx.scale(dpr, dpr);
+                this.particles.resize(this.width, this.height);
+                this.createScanlinesPattern();
             }
             createScanlinesPattern() {
                 const offscreen = document.createElement('canvas'); offscreen.width = 1; offscreen.height = 4;
