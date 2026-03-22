@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <style>
+        :root {
+            --bg-dark: #050507;
+            --text-main: #b8b8c0;
+            --text-muted: #8a8a95;
+            --text-title: #f0f0f5;
+            --blood-red: #8a0303;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            transition: opacity 2s ease-in-out;
+            z-index: 10;
+        }
+
+        .screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #screen-1 {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://p0.piqsels.com/preview/200/117/299/america-architecture-black-and-white-city.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .rain-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 51;
+        }
+
+        .drop {
+            position: absolute;
+            background: linear-gradient(to bottom, transparent, rgba(200, 200, 220, 0.4));
+            width: 1px;
+            height: 80px;
+            bottom: 100%;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(120vh);
+            }
+        }
+
+        #btn-enter {
+            z-index: 52;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        #btn-enter:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        #screen-2 {
+            background-image: linear-gradient(rgba(10, 15, 10, 0.8), rgba(5, 5, 5, 0.95)), url('https://t3.ftcdn.net/jpg/02/76/03/22/360_F_276032251_thB5evpJ99TmtT6E7HhJgs3wPOfqBWTu.jpg');
+            background-size: cover;
+            background-position: center;
+            display: none;
+            opacity: 0;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+            cursor: pointer;
+        }
+
+        .metro-text {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.6rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.9);
+            animation: pulse-text 4s infinite alternate;
+        }
+
+        @keyframes pulse-text {
+            0% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        #screen-3 {
+            display: none;
+            opacity: 0;
+            z-index: 30;
+            background-color: var(--bg-dark);
+        }
+
+        .slider-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slider-track {
+            display: flex;
+            width: 1200vw;
+            height: 100vh;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .slide-img-col {
+            flex: 0 0 55%;
+            height: 100%;
+            background-color: #000;
+            position: relative;
+        }
+
+        .slide-img-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            image-rendering: high-quality;
+            filter: grayscale(100%);
+            transition: filter 0.8s ease;
+        }
+
+        .slide-img-col img:hover {
+            filter: grayscale(0%);
+        }
+
+        .slide-img-col::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(10, 10, 12, 0.98) 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .pos-center {
+            object-position: center;
+        }
+
+        .pos-owlman {
+            object-position: top center;
+        }
+
+        .pos-ningen {
+            object-position: center left;
+        }
+
+        .slide-text-col {
+            flex: 0 0 45%;
+            height: 100%;
+            background-color: rgba(10, 10, 12, 0.98);
+            padding: 50px 50px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            scrollbar-width: thin;
+            scrollbar-color: #333 var(--bg-dark);
+        }
+
+        .slide-text-col::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .slide-text-col::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        .slide-text-col::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .beast-name {
+            font-size: 2.8rem;
+            color: var(--text-title);
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+
+        .zodiac-sign {
+            font-size: 1.6rem;
+            color: var(--blood-red);
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .lore-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--blood-red);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            color: #d0d0d5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .lore-info ul {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .lore-info li {
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .lore-info strong {
+            color: var(--text-title);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .lore-desc {
+            font-style: italic;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+
+        .horoscope-text {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: var(--text-main);
+            text-align: left;
+        }
+
+        .horoscope-text p {
+            margin-bottom: 15px;
+        }
+
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 80px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border-radius: 12px;
+        }
+
+        #prev-btn {
+            left: 10px;
+        }
+
+        #next-btn {
+            right: 10px;
+        }
+
+        #menu-toggle {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            z-index: 110;
+            transition: color 0.3s;
+        }
+
+        #menu-toggle:hover {
+            color: #fff;
+        }
+
+        #dropdown-menu {
+            position: fixed;
+            top: 80px;
+            right: 40px;
+            background: rgba(15, 15, 18, 0.95);
+            border: 1px solid #333;
+            width: 280px;
+            max-height: 70vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 105;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+            padding: 10px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        #dropdown-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: var(--text-main);
+            cursor: pointer;
+            border-bottom: 1px solid #222;
+            transition: background 0.2s, padding-left 0.2s;
+            text-align: left;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: #111;
+            color: #fff;
+            padding-left: 35px;
+            border-left: 2px solid #fff;
+        }
+
+        #dropdown-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #dropdown-menu::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #dropdown-menu::-webkit-scrollbar-thumb {
+            background: #555;
+        }
+
+        @media (max-width: 900px) and (orientation: portrait) {
+            .slide {
+                flex-direction: column;
+            }
+
+            .slide-img-col {
+                flex: 0 0 40vh;
+                width: 100vw;
+                height: 40vh;
+            }
+
+            .slide-img-col::after {
+                width: 100%;
+                height: 50%;
+                top: auto;
+                bottom: 0;
+                background: linear-gradient(to bottom, transparent 0%, rgba(10, 10, 12, 0.98) 100%);
+            }
+
+            .slide-text-col {
+                flex: 0 0 60vh;
+                width: 100vw;
+                height: 60vh;
+                padding: 30px 20px;
+            }
+
+            .beast-name {
+                font-size: 2.2rem;
+            }
+
+            .zodiac-sign {
+                font-size: 1.4rem;
+            }
+
+            .metro-text {
+                font-size: 1.2rem;
+                width: 90%;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            #menu-toggle {
+                top: 20px;
+                right: 20px;
+                font-size: 2.2rem;
+            }
+
+            #dropdown-menu {
+                width: 250px;
+                right: 20px;
+                top: 70px;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            .slide {
+                flex-direction: row;
+            }
+
+            .slide-img-col {
+                flex: 0 0 40vw;
+                height: 100vh;
+                width: 40vw;
+            }
+
+            .slide-img-col::after {
+                width: 50%;
+                height: 100%;
+                top: 0;
+                bottom: auto;
+                background: linear-gradient(to right, transparent 0%, rgba(10, 10, 12, 0.98) 100%);
+            }
+
+            .slide-text-col {
+                flex: 0 0 60vw;
+                height: 100vh;
+                width: 60vw;
+                padding: 20px 40px;
+            }
+
+            .beast-name {
+                font-size: 2rem;
+            }
+
+            .zodiac-sign {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .lore-info {
+                padding: 10px 15px;
+                margin-bottom: 15px;
+                font-size: 0.8rem;
+            }
+
+            .horoscope-text {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .metro-text {
+                font-size: 1.2rem;
+                width: 90%;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            #menu-toggle {
+                top: 15px;
+                right: 20px;
+                font-size: 1.8rem;
+            }
+
+            #dropdown-menu {
+                width: 250px;
+                right: 20px;
+                top: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="audio-metro" src="https://actions.google.com/sounds/v1/transportation/train_passby.ogg" loop
+        preload="auto"></audio>
+    <audio id="audio-rain-muffled" src="https://actions.google.com/sounds/v1/weather/rain_on_roof.ogg" loop
+        preload="auto"></audio>
+    <audio id="audio-uncanny" src="https://actions.google.com/sounds/v1/science_fiction/alien_breath.ogg" loop
+        preload="auto"></audio>
+
+    <div id="screen-1" class="screen">
+        <div class="rain-container" id="rain-container"></div>
+        <button id="btn-enter">Accedere alla metro?</button>
+    </div>
+
+    <div id="screen-2" class="screen">
+        <div class="metro-text">
+            "Le leggende metropolitane non sono semplici invenzioni. Sono anomalie che si annidano nei punti ciechi
+            della nostra routine, nei luoghi di transito dove nessuno si ferma mai a guardare. Come
+            questo.<br><br>Scendendo fin qui, hai appena annullato la distanza tra il racconto e la realtà."
+        </div>
+    </div>
+
+    <div id="screen-3" class="screen">
+        <div class="nav-arrow" id="prev-btn">&#10094;</div>
+        <div class="nav-arrow" id="next-btn">&#10095;</div>
+
+        <div id="menu-toggle">&#9776;</div>
+        <div id="dropdown-menu">
+            <div class="menu-item" data-index="0">Il Ningen</div>
+            <div class="menu-item" data-index="1">I Nightcrawlers</div>
+            <div class="menu-item" data-index="2">I Black-Eyed Kids</div>
+            <div class="menu-item" data-index="3">Mostro di Pope Lick</div>
+            <div class="menu-item" data-index="4">Il Mothman</div>
+            <div class="menu-item" data-index="5">Kuchisake-onna</div>
+            <div class="menu-item" data-index="6">L'Uomo Sorridente</div>
+            <div class="menu-item" data-index="7">Il Demone di Dover</div>
+            <div class="menu-item" data-index="8">Mostro di Flatwoods</div>
+            <div class="menu-item" data-index="9">Il Varcolac</div>
+            <div class="menu-item" data-index="10">El Silbón</div>
+            <div class="menu-item" data-index="11">L'Uomo Gufo</div>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-track" id="slider-track">
+
+                <div class="slide">
+                    <div class="slide-img-col"><img src="https://img.artpal.com/607111/6-19-2-24-9-53-23m.jpg"
+                            alt="Il Ningen" class="pos-ningen"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Il Ningen</h2>
+                        <div class="zodiac-sign">Ariete</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Oceano Antartico</li>
+                                <li><strong>Pericolosità:</strong> Bassa / Sconosciuta</li>
+                                <li><strong>Scoperta:</strong> 2007 (Forum 2channel)</li>
+                            </ul>
+                            <p class="lore-desc">Un criptide marino di proporzioni colossali, descritto come simile a
+                                una balena dal pallore spettrale, ma dotato di fattezze umanoidi, braccia e dita.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Concentrati sul lavoro dietro le quinte. Questa settimana le tue mosse migliori sono
+                                quelle che nessuno vede arrivare. C'è molta agitazione in superficie, tra colleghi o
+                                conoscenti che cercano disperatamente attenzioni. Lasciali fare.</p>
+                            <p>Il tuo vantaggio in questo momento sta nel mantenere un profilo basso e inabissarti nello
+                                studio o nella preparazione del tuo prossimo progetto. Emergerai al momento opportuno, e
+                                l'impatto sarà innegabile.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://beastsoflegend.com/wp-content/uploads/2026/01/fresno-nightcrawlers-1024x536.png"
+                            alt="I Nightcrawlers" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">I Nightcrawlers</h2>
+                        <div class="zodiac-sign">Toro</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Fresno, California (USA)</li>
+                                <li><strong>Pericolosità:</strong> Innocua</li>
+                                <li><strong>Scoperta:</strong> Fine anni '90 (Video VHS)</li>
+                            </ul>
+                            <p class="lore-desc">Misteriose entità pallide composte unicamente da un paio di lunghe
+                                gambe fluide e una piccola testa, note per il loro incedere goffo e notturno.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Hai la sensazione di muoverti in modo goffo, procedendo per tentativi ed errori in una
+                                situazione o in un compito lavorativo che non padroneggi del tutto. È normale e fa parte
+                                dell'apprendimento.</p>
+                            <p>Non lasciare che l'ansia di sentirti osservato o giudicato ti paralizzi. La perfezione
+                                estetica in questo momento è inutile; conta solo andare avanti, un passo incerto dopo
+                                l'altro. Raggiungerai il traguardo molto prima di chi è rimasto fermo per la paura di
+                                sembrare ridicolo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://img.atlasobscura.com/LXyBgTLARCTWdItFEcXWdGSnEaRSBAmnQOLKqGdPlQw/rt:fit/w:1280/q:81/sm:1/scp:1/ar:1/aHR0cHM6Ly9hdGxh/cy1kZXYuczMuYW1h/em9uYXdzLmNvbS91/cGxvYWRzL2Fzc2V0/cy84MTUyMTc1My05/YjFlLTQ3NGEtYTNk/NC03YTk1MDUzMjFl/MTdlMDYzZTU2ZjBj/ZTdiYWE0N2JfYmxh/Y2sgZXllZCBjaGls/ZHJlbiBGSU5BTC5q/cGc.jpg"
+                            alt="I Black-Eyed Kids" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">I Black-Eyed Kids</h2>
+                        <div class="zodiac-sign">Gemelli</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Globale (Stati Uniti inizialmente)</li>
+                                <li><strong>Pericolosità:</strong> Alta (Psicologica)</li>
+                                <li><strong>Scoperta:</strong> 1998</li>
+                            </ul>
+                            <p class="lore-desc">Bambini o adolescenti dagli occhi interamente neri. Bussano a porte o
+                                finestrini di notte, esigendo il permesso verbale per poter entrare.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>La vera sfida di questi giorni sarà imparare a dire di no senza sentirti in colpa.
+                                Qualcuno nel tuo cerchio di amicizie o sul lavoro cercherà di oltrepassare i tuoi
+                                limiti, chiedendo favori invadenti.</p>
+                            <p>Ricorda che sei tu ad avere il controllo del tuo tempo e del tuo spazio. Chiudi la porta
+                                alle richieste insistenti e inique: non devi alcun tipo di giustificazione a chi non sa
+                                rispettare i tuoi confini personali.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://www.corrierenerd.it/wp-content/uploads/2015/05/pope1_upscaled.png"
+                            alt="Mostro di Pope Lick" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Il Mostro di Pope Lick</h2>
+                        <div class="zodiac-sign">Cancro</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Louisville, Kentucky (USA)</li>
+                                <li><strong>Pericolosità:</strong> Letale</li>
+                                <li><strong>Scoperta:</strong> Metà XX secolo</li>
+                            </ul>
+                            <p class="lore-desc">Un grottesco ibrido tra un uomo e una capra che utilizza poteri
+                                ipnotici e mimetismo vocale per attirare i curiosi sui tralicci della ferrovia.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Attenzione alle scorciatoie professionali o alle offerte che sembrano troppo belle per
+                                essere vere. C'è una situazione, o forse una persona del passato, che esercita su di te
+                                un certo fascino, spingendoti a ignorare i chiari segnali d'allarme pur di assecondarla.
+                            </p>
+                            <p>Ritrova la lucidità. Se senti che stai camminando su un terreno instabile o pericoloso
+                                solo per compiacere qualcun altro, fermati e fai un passo indietro prima che le
+                                conseguenze pratiche ti travolgano.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://cdn.blogo.it/rdVrzzpVoPw0ISP9h6_FOlLOMEI=/1280x720/smart/https://www.blogo.it/app/uploads/sites/3/2020/02/the-mothman-legacy-teaser-trailer-del-documentario-west-virginia-hills-1.jpg"
+                            alt="Il Mothman" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Il Mothman</h2>
+                        <div class="zodiac-sign">Leone</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Point Pleasant, West Virginia (USA)</li>
+                                <li><strong>Pericolosità:</strong> Presagio (Non direttamente ostile)</li>
+                                <li><strong>Scoperta:</strong> 1966</li>
+                            </ul>
+                            <p class="lore-desc">Una gigantesca creatura alata con ipnotici occhi rossi luminosi. La sua
+                                apparizione è storicamente legata a imminenti catastrofi, come crolli strutturali.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Il tuo sesto senso è particolarmente acuto in questo periodo. Se un progetto a cui stai
+                                lavorando non ti convince, se un accordo ha zone d'ombra o se una determinata situazione
+                                ti trasmette inquietudine, non ignorare la sensazione.</p>
+                            <p>Non sei affatto paranoico, stai semplicemente leggendo bene i segnali prima che le
+                                dinamiche crollino. Anticipa i problemi pratici: riorganizza le scadenze e allontanati
+                                dalle trattative che non ti danno garanzie solide.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://i1.sndcdn.com/artworks-000196334861-lb7qyx-t500x500.jpg" alt="Kuchisake-onna"
+                            class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Kuchisake-onna</h2>
+                        <div class="zodiac-sign">Vergine</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Giappone</li>
+                                <li><strong>Pericolosità:</strong> Estrema</li>
+                                <li><strong>Scoperta:</strong> Epoca Heian (Origini) / 1979</li>
+                            </ul>
+                            <p class="lore-desc">Lo spirito vendicativo di una donna con il volto sfigurato da un
+                                taglio. Pone alla vittima la fatale domanda "Sono bella?" brandendo enormi forbici.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Ti troverai incastrato in discussioni lavorative o relazionali da cui sembra impossibile
+                                uscirne vincitore. Ti verranno poste domande a trabocchetto in cui la sincerità assoluta
+                                potrebbe rivelarsi un'arma a doppio taglio.</p>
+                            <p>Evita i conflitti frontali e le prese di posizione rigide. Usa la diplomazia, mantieni le
+                                risposte volutamente vaghe e prendi tempo, rimandando le decisioni importanti a quando
+                                l'aria si sarà finalmente calmata.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://static.wikia.nocookie.net/creepypasta/images/9/96/The_smiling_man.jpg/revision/latest?cb=20121226210053"
+                            alt="L'Uomo Sorridente" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">L'Uomo Sorridente</h2>
+                        <div class="zodiac-sign">Bilancia</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Stati Uniti (Web/Creepypasta)</li>
+                                <li><strong>Pericolosità:</strong> Alta (Inseguitore psicologico)</li>
+                                <li><strong>Scoperta:</strong> 2012</li>
+                            </ul>
+                            <p class="lore-desc">Una figura insolitamente alta e dinoccolata. Indossa abiti spesso
+                                stravaganti e sfoggia un sorriso grottesco, inumano e fisso, seguendo le vittime nella
+                                notte.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>L'ambiente attorno a te in questi giorni è saturo di finti sorrisi e convenevoli vuoti.
+                                Qualcuno sta cercando di capirti per trarne un vantaggio, mostrandosi esageratamente
+                                amichevole o accondiscendente senza un vero motivo.</p>
+                            <p>Mantieni le dovute distanze professionali. Non c'è bisogno di essere ostili, ma proteggi
+                                le tue idee e i tuoi piani futuri. La riservatezza sarà la tua miglior corazza contro
+                                chi cerca di insinuarsi nella tua rete di contatti per puro calcolo personale.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://www.sogliaoscura.org/gabriele_luzzini/wp-content/uploads/2020/02/dover000002-780x427.png"
+                            alt="Il Demone di Dover" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Il Demone di Dover</h2>
+                        <div class="zodiac-sign">Scorpione</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Dover, Massachusetts (USA)</li>
+                                <li><strong>Pericolosità:</strong> Innocua / Criptide elusivo</li>
+                                <li><strong>Scoperta:</strong> Aprile 1977</li>
+                            </ul>
+                            <p class="lore-desc">Creatura dall'aspetto alieno, glabra, con una testa sproporzionata a
+                                forma di melone, lunghe dita affusolate ed enormi occhi arancioni senza pupille.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>La tua miglior strategia per la settimana è l'osservazione silenziosa. Mettiti in
+                                disparte durante le riunioni o le discussioni accese e limitati semplicemente ad
+                                ascoltare chi sta parlando troppo.</p>
+                            <p>Noterai rapidamente dettagli, incongruenze e segnali non verbali che a tutti gli altri
+                                stanno sfuggendo. Raccogliere informazioni in questo modo, senza intervenire
+                                direttamente, ti metterà in una posizione di netto vantaggio quando sarà il momento di
+                                fare la tua mossa.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img src="https://www.cicap.org/new/images/thumb/b/a/690x518_Q36_p77.png"
+                            alt="Mostro di Flatwoods" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Mostro di Flatwoods</h2>
+                        <div class="zodiac-sign">Sagittario</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Flatwoods, West Virginia (USA)</li>
+                                <li><strong>Pericolosità:</strong> Moderata (Gas irritante)</li>
+                                <li><strong>Scoperta:</strong> 12 Settembre 1952</li>
+                            </ul>
+                            <p class="lore-desc">Un'entità aliena torreggiante, con una veste metallica e una testa
+                                sagomata a forma di vanga, in grado di emettere sibili meccanici e una nebbia tossica.
+                            </p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>L'aria si sta facendo pesante in un tuo ambiente abituale. Tensioni irrisolte, lamentele
+                                costanti o dinamiche di gruppo tossiche stanno inquinando la tua produttività e il tuo
+                                umore.</p>
+                            <p>Non puoi risolvere tutto da solo e, soprattutto, non puoi ragionare con chi non ha
+                                intenzione di ascoltare. La mossa più intelligente ora non è lo scontro frontale, ma
+                                prendere fisicamente le distanze. Cambia aria, stacca la spina e tutela la tua pace
+                                mentale.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img src="https://life.ro/wp-content/uploads/2023/08/varcolaci.png"
+                            alt="Il Varcolac" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">Il Varcolac</h2>
+                        <div class="zodiac-sign">Capricorno</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Romania / Penisola Balcanica</li>
+                                <li><strong>Pericolosità:</strong> Estrema (Forza astrale)</li>
+                                <li><strong>Scoperta:</strong> Folklore mitologico antico</li>
+                            </ul>
+                            <p class="lore-desc">Spirito demoniaco, a metà tra vampiro e licantropo, di una potenza tale
+                                da poter balzare in cielo per inghiottire la luna provocando eclissi sanguigne.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Una figura di riferimento o una certezza professionale su cui contavi molto potrebbe
+                                improvvisamente venire meno, lasciandoti momentaneamente al buio e senza direttive
+                                chiare. Non farti prendere dal panico.</p>
+                            <p>Questa temporanea "eclissi" delle tue solite sicurezze è in realtà la grande occasione
+                                che aspettavi per prendere il comando. Hai tutte le competenze per gestire la situazione
+                                in autonomia: sfrutta il vuoto lasciato dagli altri per importi e dimostrare quanto
+                                vali.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://static.wikia.nocookie.net/mythology/images/d/db/Kamuro-illustrator-el-silbon.jpg/revision/latest?cb=20200926063722"
+                            alt="El Silbón" class="pos-center"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">El Silbón</h2>
+                        <div class="zodiac-sign">Acquario</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Los Llanos (Venezuela e Colombia)</li>
+                                <li><strong>Pericolosità:</strong> Letale</li>
+                                <li><strong>Scoperta:</strong> Mitologia del XIX secolo</li>
+                            </ul>
+                            <p class="lore-desc">Spettro smunto e macabro che viaggia trasportando un sacco pieno di
+                                ossa. Il suo fischio è illusorio: se suona lontano, la creatura è già addosso alla
+                                vittima.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>Stai sottovalutando scadenze o impegni che continui a credere ancora lontani. Quella
+                                pratica burocratica o quella discussione spinosa che continui a rimandare è molto più
+                                vicina di quanto sembri, e il tempo a tua disposizione sta per scadere.</p>
+                            <p>Svuota il sacco delle incombenze arretrate: affrontale subito, una per volta,
+                                organizzando il lavoro. Togliersi il pensiero oggi eviterà che queste pendenze si
+                                trasformino in una vera e propria emergenza domani.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div class="slide-img-col"><img
+                            src="https://images.squarespace-cdn.com/content/v1/5b77a031266c0772987725f7/1534633426675-N8UWAQ715R6CH7O74XXU/owlman.jpg"
+                            alt="L'Uomo Gufo" class="pos-owlman"></div>
+                    <div class="slide-text-col">
+                        <h2 class="beast-name">L'Uomo Gufo</h2>
+                        <div class="zodiac-sign">Pesci</div>
+                        <div class="lore-info">
+                            <ul>
+                                <li><strong>Origine:</strong> Mawnan, Cornovaglia (Regno Unito)</li>
+                                <li><strong>Pericolosità:</strong> Bassa / Inquietante</li>
+                                <li><strong>Scoperta:</strong> Aprile 1976</li>
+                            </ul>
+                            <p class="lore-desc">Enorme creatura dall'aspetto a metà tra un uomo e un possente rapace,
+                                con occhi rossi e artigli, avvistato appollaiato tra le rovine di chiese nei boschi.</p>
+                        </div>
+                        <div class="horoscope-text">
+                            <p>C'è molta agitazione attorno a te su questioni che, in fondo, sai benissimo essere
+                                irrilevanti. Evita assolutamente di farti trascinare nei piccoli drammi quotidiani, nei
+                                pettegolezzi da ufficio o nelle polemiche social.</p>
+                            <p>Prendi quota e guarda la situazione dall'alto: ti accorgerai che molte delle cose per cui
+                                gli altri si disperano non avranno alcun impatto sul lungo termine. Concentrati sui tuoi
+                                obiettivi pratici e lascia che chi sta in basso continui a fare rumore per nulla.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const audioMetro = document.getElementById('audio-metro');
+            const audioRainMuffled = document.getElementById('audio-rain-muffled');
+            const audioUncanny = document.getElementById('audio-uncanny');
+
+            const screen1 = document.getElementById('screen-1');
+            const screen2 = document.getElementById('screen-2');
+            const screen3 = document.getElementById('screen-3');
+
+            const btnEnter = document.getElementById('btn-enter');
+
+            const rainContainer = document.getElementById('rain-container');
+            for (let i = 0; i < 150; i++) {
+                let drop = document.createElement('div');
+                drop.classList.add('drop');
+                drop.style.left = (Math.random() * 100) + 'vw';
+                let duration = Math.random() * 0.4 + 0.2;
+                drop.style.animationDuration = duration + 's';
+                drop.style.animationDelay = (Math.random() * 2) + 's';
+                rainContainer.appendChild(drop);
+            }
+
+            btnEnter.addEventListener('click', () => {
+                screen1.classList.add('hidden');
+                audioMetro.volume = 1.0;
+                audioRainMuffled.volume = 0.8;
+                audioMetro.play().catch(e => console.log("Audio play blocked", e));
+                audioRainMuffled.play().catch(e => console.log("Audio play blocked", e));
+                setTimeout(() => {
+                    screen1.style.display = 'none';
+                    screen2.style.display = 'flex';
+                    requestAnimationFrame(() => { screen2.style.opacity = '1'; });
+                }, 2000);
+            });
+
+            screen2.addEventListener('click', () => {
+                screen2.style.opacity = '0';
+                let fadeAudio = setInterval(() => {
+                    let isFading = false;
+                    if (audioMetro.volume > 0.05) { audioMetro.volume -= 0.05; isFading = true; } else { audioMetro.pause(); }
+                    if (audioRainMuffled.volume > 0.05) { audioRainMuffled.volume -= 0.05; isFading = true; } else { audioRainMuffled.pause(); }
+                    if (!isFading) { clearInterval(fadeAudio); }
+                }, 100);
+                audioUncanny.volume = 0.3;
+                audioUncanny.play().catch(e => console.log("Audio play blocked", e));
+                setTimeout(() => {
+                    screen2.style.display = 'none';
+                    screen3.style.display = 'block';
+                    requestAnimationFrame(() => { screen3.style.opacity = '1'; });
+                }, 2000);
+            });
+
+            const sliderTrack = document.getElementById('slider-track');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+
+            function updateSlider() {
+                sliderTrack.style.transform = 'translateX(-' + (currentSlide * 100) + 'vw)';
+            }
+
+            prevBtn.addEventListener('click', () => {
+                currentSlide = (currentSlide > 0) ? currentSlide - 1 : totalSlides - 1;
+                updateSlider();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentSlide = (currentSlide < totalSlides - 1) ? currentSlide + 1 : 0;
+                updateSlider();
+            });
+
+            const menuToggle = document.getElementById('menu-toggle');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdownMenu.contains(e.target) && e.target !== menuToggle) {
+                    dropdownMenu.classList.remove('active');
+                }
+            });
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    currentSlide = parseInt(e.target.getAttribute('data-index'));
+                    updateSlider();
+                    dropdownMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
