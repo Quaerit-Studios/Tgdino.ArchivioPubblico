@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            background-color: #020202;
+            overflow: hidden !important;
+            font-family: monospace;
+            cursor: none !important;
+            touch-action: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            cursor: none !important;
+        }
+
+        canvas {
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-touch-action: none;
+            touch-action: auto;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="app"></canvas>
+
+    <script>
+        /**
+         * Dati dell'Oroscopo - DATABASE IMMAGINI AGGIORNATO CON SPECIFICHE
+         */
+        const OROSCOPO_DATA = [
+            { sign: "Ariete", console: "Nintendo Game Boy (1989)", imgUrl: "https://www.uagna.it/wp-content/uploads/2014/04/game-boy.jpg", text: "La tua energia questa settimana è alle stelle, proprio come l'autonomia delle tue batterie. Sul lavoro e in amore sei pragmatico e diretto: niente fronzoli, solo azione. Attento però a non dare per scontata la tua resistenza, anche i sistemi più affidabili hanno bisogno di ricaricarsi. Gestisci le forze e non strafare nel weekend.", specs: ["Display monocromatico riflettente (senza retroilluminazione).", "Autonomia fino a 15-30 ore (con 4 pile AA).", "Processore Sharp LR35902 a 4.19 MHz.", "Venduto con Tetris, diventando un fenomeno globale."] },
+            { sign: "Toro", console: "SNK Neo Geo (1990)", imgUrl: "https://i.ebayimg.com/images/g/JFMAAeSwvQhpPiyD/s-l1200.jpg", text: "In questi giorni non accetti compromessi, cerchi fedeltà nelle relazioni e investimenti sicuri sul lavoro. Come l'hardware arcade più costoso di sempre, il tuo standard è altissimo, ma rischi di risultare inaccessibile a chi vorrebbe avvicinarsi. In amore, abbassa leggermente l'asticella o rischierai di isolarti. Concedi a qualcuno una partita.", specs: ["Hardware identico ai cabinati arcade MVS (Multi Video System).", "Cartucce enormi e costose (fino a 330 Mega di memoria).", "Grafica 2D (sprite giganti e zoom hardware).", "Simbolo di lusso nel gaming domestico anni '90."] },
+            { sign: "Gemelli", console: "Nintendo DS (2004)", imgUrl: "https://www.cdiscount.com/pdt2/2/0/2/1/700x700/8809208140202/rw/console-ds-lite-silver.jpg", text: "Sei perfettamente in grado di gestire più situazioni contemporaneamente: la sfera razionale e le tue emozioni. Le tue doti comunicative sono all'apice, ma fai attenzione a non dividere troppo la tua attenzione. Scegli su quale schermo far scorrere l'azione principale e usa l'altro solo come mappa.", specs: ["Design a doppio schermo (Dual Screen) con cerniera a conchiglia.", "Schermo inferiore sensibile al tocco (Touch Screen).", "Microfono integrato e connettività Wi-Fi per il multiplayer locale.", "Retrocompatibile con le cartucce del Game Boy Advance."] },
+            { sign: "Cancro", console: "Super Nintendo / SNES (1990)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/1/18/Wikipedia_SNES_PAL.jpg", text: "Una settimana all'insegna della nostalgia e della sicurezza affettiva. Il tuo bisogno di radici ti spinge a rifugiarti nei legami passati, quelli collaudati che non tradiscono mai. In ambito lavorativo potresti sentirti rassicurato dai vecchi metodi, ma è il momento di soffiare via la polvere e affrontare le nuove sfide con rinnovata chiarelza. L'amore richiede gesti classici ma d'impatto.", specs: ["Chip sonoro a 8 canali progettato da Ken Kutaragi (Sony).", "Funzionalità 'Mode 7' per simulare prospettiva tridimensionale 2D.", "Controller con i tasti dorsali (L ed R).", "Ospite di alcuni dei più grandi RPG e platform."] },
+            { sign: "Leone", console: "Sega Mega Drive (1988)", imgUrl: "https://files.refurbed.com/pi/sega-mega-drive-mini-1686128567.jpg?t=fitdesign&h=600&w=800", text: "Hai voglia di dimostrare al mondo quanto sei veloce, carismatico e superiore alla concorrenza. Questa aggressività propositiva ti aprirà porte importanti nella carriera, ma in amore l'arroganza non paga. Ricorda che sbandierare la tua potenza conta poco se non dedichi tempo a costruire una narrazione profonda con il partner. Meno slogan, più sentimenti.", specs: ["Basato sul processore Motorola 68000 a 16-bit.", "Promosso con il termine 'Blast Processing' per enfatizzare la velocità.", "Soundchip Yamaha FM che ha definito il sound elettronico dei primi anni '90.", "Protagonista della prima vera 'Console War' contro Nintendo."] },
+            { sign: "Vergine", console: "Atari Jaguar (1993)", imgUrl: "https://retromania-shop.com/cdn/shop/files/IMG_4217.jpg?v=1741185721", text: "La tua mente analitica sta elaborando calcoli complessi, sbandierando una presunta superiorità logica su chi ti circonda. Tuttavia, promettere prestazioni elevate sul lavoro, senza avere delle vere azioni concrete a supporto, ti farà perdere credibilità. Smetti di concentrarti sulla teoria dei tuoi piani e inizia a consegnare risultati reali e tangibili.", specs: ["Pubblicizzato come il primo sistema a 64-bit.", "Architettura multi-chip complessa e difficile da programmare.", "Controller massiccio con tastierino numerico a 12 tasti.", "Famoso per il flop commerciale nonostante l'ambizione tecnica."] },
+            { sign: "Bilancia", console: "Sega Dreamcast (1998)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/8/81/Dreamcast-Console-Set.jpg", text: "Esteticamente impeccabile e concettualmente avanti di dieci anni. In amore e nelle collaborazioni stai cercando connessioni profonde in un ambiente che forse viaggia ancora nell'ignoranza. Non frustrarti se le tue visioni non vengono capite subito; il tempismo non è il tuo forte questa settimana. Mantieni la tua integrità e aspetta. Il valore delle tue intuizioni verrà riconosciuto col tempo.", specs: ["Prima console con modem integrato per il gioco online di serie.", "Utilizzava il formato proprietario GD-ROM da 1.2 GB.", "Memory card 'VMU' dotata di mini-schermo LCD e tasti propri.", "Hardware basato sull'architettura arcade Sega NAOMI."] },
+            { sign: "Scorpione", console: "Sony PlayStation 1 (1994)", imgUrl: "https://files.refurbed.com/ii/playstation-ps1-1646218800.jpg", text: "Una settimana di trasformazioni radicali e misteriose. Stai processando una mole di emozioni e segreti che i vecchi supporti non potevano contenere. È un ottimo momento per tagliare i ponti col passato e lanciare progetti freschi. Proteggi gelosamente la tua empatia ed emotività. Condividi la tua sensibilità solo con chi ha dimostrato fedeltà assoluta.", specs: ["Passaggio definitivo dalle cartucce al formato CD-ROM.", "Hardware ottimizzato per il rendering di poligoni 3D in tempo reale.", "Introduzione della Memory Card per salvataggi flessibili.", "Ha trasformato il videogioco in un intrattenimento per 'adulti'."] },
+            { sign: "Sagittario", console: "Panasonic 3DO (1993)", imgUrl: "https://i.ebayimg.com/00/s/MTYwMFgxNjAw/z/5ZgAAOSwKFtmgjwM/$_57.JPG?set_id=880000500F", text: "La tua fame di esplorazione ti porta a concepire grandi progetti. Il problema? Le tue pretese, al momento, hanno un costo emotivo e relazionale troppo alto per chiunque. Rischia di essere una settimana di grandi aspettative ma scarso coinvolgimento pratico. Ridimensiona il tuo ego e renditi più accessibile alla vita reale.", specs: ["Concepito come uno standard multimediale aperto, non solo una console.", "Primo sistema a 32-bit di massa con capacità video Full Motion.", "Prezzo di lancio altissimo (700 dollari), che ne decretò il fallimento.", "Controller con presa cuffie e controlli volume integrati."] },
+            { sign: "Capricorno", console: "Atari 2600 (1977)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Atari-2600-Wood-4Sw-Set.jpg", text: "Ritorno alle basi. Questa settimana la tua disciplina è scolpita nel metallo. Nessuna distrazione, niente di superfluo. In ambito lavorativo ti basta un solo modo per abbattere gli ostacoli e centrare gli obiettivi. In amore potresti sembrare un po' rigido e rudimentale: cerca di ammorbidire le tue interazioni, aggiungendo qualche colore in più alla tua routine.", specs: ["Primo sistema a rendere popolare l'uso di cartucce intercambiabili.", "Processore MOS 6507 a 1.19 MHz e soli 128 byte di RAM.", "Case iconico con finiture in finto legno (nella versione originale).", "Joystick a pulsante singolo diventato simbolo del gaming primitivo."] },
+            { sign: "Acquario", console: "Nintendo Virtual Boy (1995)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/4/44/Virtual-Boy-Set.jpg", text: "Le tue idee eccentriche rischiano di procurare un gran mal di testa a chi ti sta vicino. La tua visione di vita sentimentale o progetti altera la profondità delle cose, isolandoti dagli altri. È il momento di togliere la testardaggine, uscire dalla tua visione a tunnel e tornare a interfacciarti con il mondo esterno alla luce del sole.", specs: ["Display stereoscopico monocromatico a LED rossi su sfondo nero.", "Effetto 3D ottenuto tramite specchi oscillanti ad alta velocità.", "Controller con doppio pad direzionale per gestire la profondità.", "Durata sul mercato brevissima a causa dell'affaticamento visivo."] },
+            { sign: "Pesci", console: "Philips CD-i (1991)", imgUrl: "https://images.squarespace-cdn.com/content/v1/65994ff7924e6f2382e8ad4b/2439e76d-77d1-44aa-b5cd-3c45a87b0af3/cdi.jpg", text: "La tua confusione questa settimana raggiunge dei picchi. Ti stai perdendo in mille attività: arte, lavoro, sogni d'amore e progetti indefiniti si mescolano in un minestrone senza un obiettivo chiaro. L'intuizione è forte, ma manca la direzione. Fermati, chiudi le schede inutili e concentrati su un solo obiettivo alla volta, altrimenti concluderai la settimana senza aver salvato nulla.", specs: ["Formato multimediale interattivo basato su standard CD.", "Utilizzato per enciclopedie virtuali, film e giochi sperimentali.", "Famoso per i discutibili giochi su licenza Nintendo prodotti da terzi.", "Interfaccia basata su puntatore a schermo, spesso con telecomandi."] }
+        ];
+
+        // Pre-caricamento intelligente delle immagini console
+        OROSCOPO_DATA.forEach(data => {
+            data.img = new Image();
+            data.img.src = data.imgUrl;
+        });
+
+        const COLORS = {
+            bg: '#050705',
+            terminalGreen: '#33ff33',
+            terminalDim: '#1a801a',
+            amber: '#ffb000',
+            cyan: '#00ffff',
+            redGlow: '#ff0033'
+        };
+
+        /**
+         * Mappatura Tematica (Thematic Map) per le Console
+         */
+        const CONSOLE_THEMES = {
+            "Ariete": {
+                bg: "#8C9E6A", text: "#1E3C2B", title: "#1E3C2B", console: "#1E3C2B",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#8C9E6A'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = '#1E3C2B'; ctx.lineWidth = 6; ctx.strokeRect(area.x + 10, area.y + 10, area.w - 20, area.h - 20);
+                    ctx.lineWidth = 2; ctx.strokeRect(area.x + 16, area.y + 16, area.w - 32, area.h - 32);
+                    ctx.fillStyle = '#aa0000'; ctx.beginPath(); ctx.arc(area.x + 25, area.y + 35, 4, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#ff0000'; ctx.beginPath(); ctx.arc(area.x + 25, area.y + 35, 1.5, 0, Math.PI * 2); ctx.fill();
+                }
+            },
+            "Toro": {
+                bg: "#001144", text: "#ffffff", title: "#ffffff", console: "#ffd700", titleShadow: "#ff0000",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#001144'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    const grad = ctx.createLinearGradient(area.x, area.y, area.x + area.w, area.y);
+                    grad.addColorStop(0, '#555'); grad.addColorStop(0.5, '#eee'); grad.addColorStop(1, '#555');
+                    ctx.fillStyle = grad; ctx.fillRect(area.x + 10, area.y + 10, area.w - 20, 35);
+                    ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 4; ctx.strokeRect(area.x + 5, area.y + 5, area.w - 10, area.h - 10);
+                    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.strokeRect(area.x + 15, area.y + 50, area.w - 30, area.h - 65);
+                    ctx.strokeStyle = 'rgba(255, 215, 0, 0.1)'; ctx.lineWidth = 1;
+                    for (let i = 0; i < area.w; i += 40) { ctx.beginPath(); ctx.moveTo(area.x + i, area.y + 50); ctx.lineTo(area.x + i, area.y + area.h); ctx.stroke(); }
+                }
+            },
+            "Gemelli": {
+                bg: "#e0f0ff", text: "#333333", title: "#111111", console: "#555555",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#cccccc'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.fillStyle = '#f0f8ff'; const gapY = area.y + area.h * 0.35; const gapHeight = 20;
+                    ctx.fillRect(area.x + 10, area.y + 10, area.w - 20, gapY - area.y - 10);
+                    ctx.fillRect(area.x + 10, gapY + gapHeight, area.w - 20, area.y + area.h - gapY - gapHeight - 10);
+                    ctx.fillStyle = '#999'; ctx.beginPath(); ctx.arc(area.x + area.w / 2, gapY + gapHeight / 2, 3, 0, Math.PI * 2); ctx.fill();
+                }
+            },
+            "Cancro": {
+                bg: "#d3d3d3", text: "#222222", title: "#444455", console: "#555566",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#d3d3d3'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = '#a0a0a0'; ctx.lineWidth = 3; ctx.strokeRect(area.x + 15, area.y + 15, area.w - 30, area.h - 30);
+                    const r = 10;
+                    ctx.fillStyle = '#0066b3'; ctx.beginPath(); ctx.arc(area.x + 35, area.y + 35, r, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#e50012'; ctx.beginPath(); ctx.arc(area.x + area.w - 35, area.y + 35, r, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#00a94f'; ctx.beginPath(); ctx.arc(area.x + 35, area.y + area.h - 35, r, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#ffcb05'; ctx.beginPath(); ctx.arc(area.x + area.w - 35, area.y + area.h - 35, r, 0, Math.PI * 2); ctx.fill();
+                }
+            },
+            "Leone": {
+                bg: "#050505", text: "#ffffff", title: "#ffd700", console: "#00aaff",
+                drawBg: (ctx, area, time) => {
+                    const grad = ctx.createLinearGradient(area.x, area.y, area.x, area.y + area.h);
+                    grad.addColorStop(0, '#222'); grad.addColorStop(0.5, '#000'); grad.addColorStop(1, '#111');
+                    ctx.fillStyle = grad; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.fillStyle = '#0000aa'; ctx.beginPath(); ctx.moveTo(area.x, area.y + area.h);
+                    ctx.lineTo(area.x + area.w * 0.4, area.y + area.h); ctx.lineTo(area.x + area.w * 0.6, area.y + area.h - 50); ctx.lineTo(area.x, area.y + area.h - 50); ctx.fill();
+                    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 4; ctx.beginPath();
+                    ctx.moveTo(area.x, area.y + area.h - 50); ctx.lineTo(area.x + area.w * 0.6, area.y + area.h - 50); ctx.lineTo(area.x + area.w * 0.8, area.y + area.h); ctx.stroke();
+                }
+            },
+            "Vergine": {
+                bg: "#000000", text: "#cccccc", title: "#ff0000", console: "#aa0000",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 4; ctx.beginPath();
+                    for (let i = 0; i < area.h; i += 30) { ctx.lineTo(area.x + (i % 60 === 0 ? 15 : 5), area.y + i); } ctx.stroke();
+                    ctx.beginPath(); for (let i = 0; i < area.h; i += 30) { ctx.lineTo(area.x + area.w - (i % 60 === 0 ? 15 : 5), area.y + i); } ctx.stroke();
+                }
+            },
+            "Bilancia": {
+                bg: "#ffffff", text: "#333333", title: "#ff6600", console: "#00bfff",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#fcfcfc'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = '#ff6600'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath();
+                    let cx = area.x + area.w - 50, cy = area.y + 50;
+                    for (let i = 0; i < 35; i++) { let angle = 0.2 * i; let x = cx + (1.2 * angle) * Math.cos(angle); let y = cy + (1.2 * angle) * Math.sin(angle); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke();
+                    ctx.strokeStyle = 'rgba(0, 191, 255, 0.3)'; ctx.lineWidth = 2; ctx.strokeRect(area.x + 20, area.y + area.h - 50, 30, 30); ctx.strokeRect(area.x + 60, area.y + area.h - 50, 30, 30);
+                }
+            },
+            "Scorpione": {
+                bg: "#d3d3d3", text: "#111111", title: "#ffffff", console: "#ffffff", titleShadow: "#000000",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#c8c8c8'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    const colors = ['rgba(255, 0, 0, 0.15)', 'rgba(0, 255, 0, 0.15)', 'rgba(0, 0, 255, 0.15)', 'rgba(255, 255, 0, 0.15)'];
+                    for (let i = 0; i < 4; i++) { ctx.fillStyle = colors[i]; ctx.beginPath(); let px = area.x + area.w / 2 + Math.sin(time / 1000 + i) * 80; let py = area.y + area.h / 2 + Math.cos(time / 1200 + i) * 80; ctx.moveTo(px, py - 50); ctx.lineTo(px + 50, py + 50); ctx.lineTo(px - 50, py + 50); ctx.fill(); }
+                }
+            },
+            "Sagittario": {
+                bg: "#1a1a1a", text: "#dddddd", title: "#ffd700", console: "#aaaaaa",
+                drawBg: (ctx, area, time) => {
+                    const grad = ctx.createLinearGradient(area.x, area.y, area.x + area.w, area.y + area.h);
+                    grad.addColorStop(0, '#222'); grad.addColorStop(0.5, '#444'); grad.addColorStop(1, '#111');
+                    ctx.fillStyle = grad; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1;
+                    for (let i = 0; i < area.h; i += 4) { ctx.beginPath(); ctx.moveTo(area.x, area.y + i); ctx.lineTo(area.x + area.w, area.y + i); ctx.stroke(); }
+                    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.strokeRect(area.x + 10, area.y + 10, area.w - 20, area.h - 20);
+                }
+            },
+            "Capricorno": {
+                bg: "#0a0a0a", text: "#cc9900", title: "#ffae00", console: "#cc9900",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.fillStyle = '#5c2e00'; const bw = Math.min(30, area.w * 0.1); ctx.fillRect(area.x, area.y, bw, area.h); ctx.fillRect(area.x + area.w - bw, area.y, bw, area.h);
+                    ctx.strokeStyle = '#3d1f00'; ctx.lineWidth = 2;
+                    for (let i = 0; i < area.h; i += 10) { ctx.beginPath(); ctx.moveTo(area.x + Math.random() * bw, area.y + i); ctx.lineTo(area.x + Math.random() * bw, area.y + i + 20); ctx.stroke(); ctx.beginPath(); ctx.moveTo(area.x + area.w - bw + Math.random() * bw, area.y + i); ctx.lineTo(area.x + area.w - bw + Math.random() * bw, area.y + i + 20); ctx.stroke(); }
+                    ctx.strokeStyle = '#cc9900'; ctx.lineWidth = 4; ctx.setLineDash([15, 15]); ctx.strokeRect(area.x + bw + 10, area.y + 10, area.w - bw * 2 - 20, area.h - 20); ctx.setLineDash([]);
+                }
+            },
+            "Acquario": {
+                bg: "#000000", text: "#ff0000", title: "#ff0000", console: "#ff0000",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#000000'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2; ctx.strokeRect(area.x + 5, area.y + 5, area.w - 10, area.h - 10);
+                    ctx.strokeStyle = 'rgba(255, 0, 0, 0.2)'; ctx.lineWidth = 1;
+                    for (let i = 0; i < area.h; i += 4) { ctx.beginPath(); ctx.moveTo(area.x, area.y + i); ctx.lineTo(area.x + area.w, area.y + i); ctx.stroke(); }
+                }
+            },
+            "Pesci": {
+                bg: "#808080", text: "#ffffff", title: "#ffff00", console: "#ffffff", titleShadow: "#000080",
+                drawBg: (ctx, area, time) => {
+                    ctx.fillStyle = '#808080'; ctx.fillRect(area.x, area.y, area.w, area.h);
+                    ctx.fillStyle = '#000080'; ctx.fillRect(area.x, area.y, area.w, 40); ctx.fillRect(area.x, area.y + area.h - 40, area.w, 40);
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.strokeRect(area.x + 10, area.y + 50, area.w - 20, area.h - 100);
+                }
+            }
+        };
+
+        /**
+         * Motore Audio Retro (Web Audio API)
+         */
+        class RetroAudio {
+            constructor() {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContext();
+                this.isPlayingBGM = false;
+                this.bgmTimeout = null;
+            }
+
+            playGlitchSound() {
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now); osc.stop(now + 0.5);
+                const bufferSize = this.ctx.sampleRate * 0.5;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.08, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                noise.connect(noiseGain);
+                noiseGain.connect(this.ctx.destination);
+                noise.start(now);
+            }
+
+            playMenuBlip() {
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                const now = this.ctx.currentTime;
+                osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            }
+
+            startBGM() {
+                if (this.isPlayingBGM) return;
+                this.isPlayingBGM = true;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const notes = {
+                    C2: 65.41, Eb2: 77.78, F2: 87.31, G2: 98.00, Bb2: 116.54,
+                    C3: 130.81, Eb3: 155.56, F3: 174.61, G3: 196.00, Bb3: 233.08,
+                    C4: 261.63, Eb4: 311.13, F4: 349.23, G4: 392.00, Bb4: 466.16,
+                    C5: 523.25, Eb5: 622.25, F5: 698.46, G5: 783.99, Bb5: 932.33
+                };
+                const bass = [
+                    notes.C3, 0, notes.C3, 0, notes.Eb3, 0, notes.F3, 0, notes.C3, 0, notes.Bb2, 0, notes.G2, 0, notes.Bb2, 0,
+                    notes.C3, 0, notes.C3, 0, notes.Eb3, 0, notes.F3, 0, notes.C3, 0, notes.Eb3, 0, notes.F3, 0, notes.G3, 0,
+                    notes.F3, 0, notes.F3, 0, notes.G3, 0, notes.Bb3, 0, notes.F3, 0, notes.Eb3, 0, notes.C3, 0, notes.Eb3, 0,
+                    notes.G3, 0, notes.G3, 0, notes.F3, 0, notes.Eb3, 0, notes.C3, 0, notes.Bb2, 0, notes.G2, 0, notes.Bb2, 0
+                ];
+                const mel = [
+                    notes.C4, notes.Eb4, 0, notes.F4, notes.G4, 0, notes.Bb4, notes.C5, 0, notes.Bb4, notes.G4, notes.F4, notes.Eb4, 0, notes.C4, 0,
+                    0, 0, notes.G4, 0, notes.F4, 0, notes.Eb4, 0, notes.C4, 0, 0, 0, 0, 0, 0, 0,
+                    notes.F4, notes.G4, 0, notes.Bb4, notes.C5, 0, notes.Eb5, notes.C5, 0, notes.Bb4, notes.G4, notes.F4, notes.Eb4, 0, notes.C4, 0,
+                    notes.Bb3, 0, notes.C4, 0, notes.Eb4, 0, 0, 0, notes.G4, notes.F4, notes.Eb4, notes.C4, 0, 0, 0, 0
+                ];
+                let current16thNote = 0;
+                const tempo = 110.0;
+                const scheduleAheadTime = 0.1;
+                let nextNoteTime = this.ctx.currentTime + 0.1;
+                const nextNote = () => {
+                    const secondsPerBeat = 60.0 / tempo;
+                    nextNoteTime += 0.25 * secondsPerBeat;
+                    current16thNote = (current16thNote + 1) % 64;
+                };
+                const scheduleNote = (step, time) => {
+                    const bFreq = bass[step];
+                    const mFreq = mel[step];
+                    if (bFreq) {
+                        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                        osc.type = 'triangle'; osc.connect(gain); gain.connect(this.ctx.destination);
+                        osc.frequency.value = bFreq; gain.gain.setValueAtTime(0, time);
+                        gain.gain.linearRampToValueAtTime(0.1, time + 0.01); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+                        osc.start(time); osc.stop(time + 0.15);
+                    }
+                    if (mFreq) {
+                        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                        osc.type = 'square'; const filter = this.ctx.createBiquadFilter();
+                        filter.type = 'lowpass'; filter.frequency.value = 1500;
+                        osc.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+                        osc.frequency.value = mFreq; gain.gain.setValueAtTime(0, time);
+                        gain.gain.linearRampToValueAtTime(0.03, time + 0.01); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+                        osc.start(time); osc.stop(time + 0.1);
+                    }
+                };
+                const scheduler = () => {
+                    if (!this.isPlayingBGM) return;
+                    while (nextNoteTime < this.ctx.currentTime + scheduleAheadTime) {
+                        scheduleNote(current16thNote, nextNoteTime);
+                        nextNote();
+                    }
+                    this.bgmTimeout = setTimeout(scheduler, 25);
+                };
+                scheduler();
+            }
+        }
+
+        /**
+         * Sistema Particellare (CRT Dust)
+         */
+        class ParticleSystem {
+            constructor(width, height) {
+                this.width = width; this.height = height; this.particles = [];
+                const numParticles = Math.floor((width * height) / 15000);
+                for (let i = 0; i < numParticles; i++) {
+                    this.particles.push({
+                        x: Math.random() * width, y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+                        size: Math.random() * 1.5 + 0.5, alpha: Math.random() * 0.5 + 0.1
+                    });
+                }
+            }
+            resize(w, h) { this.width = w; this.height = h; }
+            update() {
+                this.particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    p.vx += (Math.random() - 0.5) * 0.02; p.vy += (Math.random() - 0.5) * 0.02;
+                    p.vx = Math.max(-0.5, Math.min(0.5, p.vx)); p.vy = Math.max(-0.5, Math.min(0.5, p.vy));
+                    if (p.x < 0) p.x = this.width; if (p.x > this.width) p.x = 0;
+                    if (p.y < 0) p.y = this.height; if (p.y > this.height) p.y = 0;
+                });
+            }
+            draw(ctx) {
+                ctx.save();
+                this.particles.forEach(p => {
+                    ctx.fillStyle = `rgba(150, 255, 150, ${p.alpha})`;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                });
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Animatore Testo Dinamico
+         */
+        class TextAnimator {
+            constructor() { this.progress = 1; this.duration = 750; }
+            start(customDuration = 750) {
+                this.startTime = performance.now();
+                this.duration = customDuration;
+                this.progress = 0;
+            }
+            update(time) {
+                if (this.progress < 1) {
+                    this.progress = Math.min(1, (time - this.startTime) / this.duration);
+                }
+            }
+            finishInstantly() { this.progress = 1; }
+        }
+
+        /**
+         * Scena 1: Boot Intro (Arcade Title Screen)
+         */
+        class IntroScene {
+            constructor(app) {
+                this.app = app; this.startTime = performance.now();
+                this.state = 'poweron_h'; this.blinkTimer = 0; this.gridY = 0;
+            }
+            update(time) {
+                const elapsed = time - this.startTime;
+                if (this.state === 'poweron_h' && elapsed > 600) { this.state = 'poweron_v'; this.startTime = time; }
+                else if (this.state === 'poweron_v' && elapsed > 400) { this.state = 'wait_input'; }
+                this.blinkTimer += 0.05;
+                if (this.state === 'wait_input') { this.gridY += 1.5; if (this.gridY > 50) this.gridY = 0; }
+            }
+            draw(ctx, w, h) {
+                const elapsed = performance.now() - this.startTime;
+                ctx.save();
+                if (this.state === 'poweron_h') {
+                    const progress = Math.min(elapsed / 600, 1);
+                    const lineWidth = w * progress;
+                    ctx.fillStyle = '#fff'; ctx.shadowBlur = 20; ctx.shadowColor = '#fff';
+                    ctx.fillRect((w - lineWidth) / 2, h / 2 - 2, lineWidth, 4);
+                } else if (this.state === 'poweron_v') {
+                    const progress = Math.min(elapsed / 400, 1);
+                    const rectHeight = h * progress;
+                    ctx.fillStyle = COLORS.terminalDim; ctx.globalAlpha = 0.3;
+                    ctx.fillRect(0, (h - rectHeight) / 2, w, rectHeight);
+                    ctx.fillStyle = '#fff'; ctx.fillRect(0, (h - rectHeight) / 2, w, 2); ctx.fillRect(0, (h + rectHeight) / 2 - 2, w, 2);
+                } else if (this.state === 'wait_input') {
+                    const horizon = h * 0.55;
+                    ctx.fillStyle = COLORS.redGlow; ctx.shadowBlur = 30; ctx.shadowColor = COLORS.redGlow;
+                    ctx.beginPath(); ctx.arc(w / 2, horizon, Math.min(w * 0.15, 100), Math.PI, 0); ctx.fill(); ctx.shadowBlur = 0;
+                    ctx.strokeStyle = COLORS.cyan; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, horizon); ctx.lineTo(w, horizon); ctx.stroke();
+                    ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)'; ctx.lineWidth = 1;
+                    for (let i = -15; i <= 15; i++) { ctx.beginPath(); ctx.moveTo(w / 2, horizon); ctx.lineTo(w / 2 + i * 150, h); ctx.stroke(); }
+                    for (let i = 0; i < 15; i++) {
+                        let yOffset = this.gridY + (i * 50); let perspectiveY = horizon + Math.pow(yOffset / 700, 2) * (h - horizon);
+                        if (perspectiveY > horizon && perspectiveY <= h) { ctx.beginPath(); ctx.moveTo(0, perspectiveY); ctx.lineTo(w, perspectiveY); ctx.stroke(); }
+                    }
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    const floatOffset = Math.sin(this.blinkTimer * 0.5) * 10;
+                    const subTitleSize = Math.min(w * 0.04, 30); ctx.font = `bold ${subTitleSize}px 'VT323', monospace`;
+                    ctx.fillStyle = COLORS.terminalGreen; ctx.fillText("OROSCOPO SETTIMANALE", w / 2, h * 0.25 + floatOffset);
+                    const titleSize = Math.min(w * 0.12, 90); ctx.font = `bold ${titleSize}px 'VT323', monospace`;
+                    ctx.fillStyle = '#880000'; ctx.fillText("DI DINO", w / 2 + 5, h * 0.38 + floatOffset + 5);
+                    ctx.fillStyle = '#cc0000'; ctx.fillText("DI DINO", w / 2 + 2, h * 0.38 + floatOffset + 2);
+                    ctx.fillStyle = COLORS.amber; ctx.shadowBlur = 15; ctx.shadowColor = COLORS.amber;
+                    ctx.fillText("DI DINO", w / 2, h * 0.38 + floatOffset); ctx.shadowBlur = 0;
+                    if (Math.sin(this.blinkTimer * 1.5) > 0) {
+                        const startSize = Math.min(w * 0.04, 25); ctx.font = `bold ${startSize}px 'VT323', monospace`;
+                        ctx.fillStyle = COLORS.cyan; ctx.shadowBlur = 10; ctx.shadowColor = COLORS.cyan;
+                        ctx.fillText("> INSERT COIN / PRESS START <", w / 2, h * 0.8); ctx.shadowBlur = 0;
+                    }
+                    ctx.font = `20px 'VT323', monospace`; ctx.fillStyle = COLORS.terminalDim; ctx.fillText("DINO_CONSOLE", w / 2, h - 25);
+                }
+                ctx.restore();
+            }
+            handleClick() { if (this.state === 'wait_input') this.app.triggerGlitchTransition(); }
+        }
+
+        /**
+         * Scena 2: Dashboard Oroscopo Arcade (Responsiva e Migliorata)
+         */
+        class DashboardScene {
+            constructor(app) {
+                this.app = app; this.subState = 'MENU_VIEW'; this.buttons = []; this.backBtn = null;
+                this.isBackHovered = false; this.selectedIndex = 0; this.lastMouseX = -1; this.lastMouseY = -1;
+                this.layoutCols = 4; this.textAnim = new TextAnimator(); this.cubeRotation = 0;
+            }
+            loadSignData(index) { this.textAnim.start(750); }
+            update(time, mouseX, mouseY) {
+                if (this.subState === 'DETAIL_VIEW') { this.textAnim.update(time); this.cubeRotation += 0.02; }
+                const mouseMoved = (mouseX !== this.lastMouseX || mouseY !== this.lastMouseY);
+                this.lastMouseX = mouseX; this.lastMouseY = mouseY;
+                this.isBackHovered = false;
+                if (this.subState === 'MENU_VIEW') {
+                    let mouseHover = -1;
+                    for (let i = 0; i < this.buttons.length; i++) {
+                        const b = this.buttons[i]; if (mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y && mouseY <= b.y + b.h) { mouseHover = i; break; }
+                    }
+                    if (mouseMoved && mouseHover !== -1) this.selectedIndex = mouseHover;
+                } else if (this.subState === 'DETAIL_VIEW') {
+                    if (this.backBtn && mouseX >= this.backBtn.x && mouseX <= this.backBtn.x + this.backBtn.w && mouseY >= this.backBtn.y && mouseY <= this.backBtn.y + this.backBtn.h) {
+                        this.isBackHovered = true;
+                    }
+                }
+            }
+            handleKeyDown(e) {
+                if (this.subState === 'MENU_VIEW') {
+                    const cols = this.layoutCols;
+                    if (e.key === 'ArrowRight') this.selectedIndex = (this.selectedIndex + 1) % 12;
+                    if (e.key === 'ArrowLeft') this.selectedIndex = (this.selectedIndex - 1 + 12) % 12;
+                    if (e.key === 'ArrowDown') this.selectedIndex = (this.selectedIndex + cols) % 12;
+                    if (e.key === 'ArrowUp') this.selectedIndex = (this.selectedIndex - cols + 12) % 12;
+                    if (e.key === 'Enter') this.executeSelection();
+                } else if (this.subState === 'DETAIL_VIEW') {
+                    if (e.key === 'Backspace' || e.key === 'Escape' || e.key === 'Enter') this.goBack();
+                }
+            }
+            calculateLayout(w, h) {
+                this.buttons = [];
+                const isMobile = w < 768;
+                const isLandscape = w > h;
+
+                if (this.subState === 'MENU_VIEW') {
+                    if (isMobile && !isLandscape) {
+                        this.layoutCols = 2; // Verticale mobile (2 colonne)
+                    } else if (isMobile && isLandscape) {
+                        this.layoutCols = 3; // Orizzontale mobile (3 colonne)
+                    } else {
+                        this.layoutCols = isLandscape ? 4 : 3; // Desktop (4 o 3)
+                    }
+
+                    const rows = Math.ceil(12 / this.layoutCols);
+                    const padding = isMobile ? 15 : 25;
+                    const totalMaxWidth = Math.min(w - (isMobile ? 20 : 60), 1200);
+                    const totalMaxHeight = h - (isMobile ? 150 : 200);
+                    const btnW = (totalMaxWidth - (this.layoutCols - 1) * padding) / this.layoutCols;
+                    const btnH = (totalMaxHeight - (rows - 1) * padding) / rows;
+                    const startX = (w - totalMaxWidth) / 2;
+                    const startY = isMobile ? 80 : 120;
+
+                    for (let i = 0; i < 12; i++) {
+                        const c = i % this.layoutCols; const r = Math.floor(i / this.layoutCols);
+                        this.buttons.push({ index: i, label: OROSCOPO_DATA[i].sign, x: startX + c * (btnW + padding), y: startY + r * (btnH + padding), w: btnW, h: btnH });
+                    }
+                } else {
+                    this.mainArea = {
+                        x: isMobile ? 10 : 30,
+                        y: isMobile ? 50 : 70,
+                        w: w - (isMobile ? 20 : 60),
+                        h: h - (isMobile ? 60 : 90)
+                    };
+                    this.backBtn = {
+                        x: isMobile ? 10 : 30,
+                        y: isMobile ? 5 : 15,
+                        w: isMobile ? 80 : 120,
+                        h: isMobile ? 35 : 40
+                    };
+                }
+            }
+            draw(ctx, w, h) {
+                this.calculateLayout(w, h);
+                if (this.subState === 'MENU_VIEW') {
+                    this.drawMenuView(ctx, w, h);
+                } else if (this.subState === 'DETAIL_VIEW') {
+                    this.drawDetailView(ctx, w, h);
+                }
+            }
+            drawMenuView(ctx, w, h) {
+                ctx.save(); const time = performance.now();
+                const isMobile = w < 768;
+
+                // Nuova Griglia HUD in background per la dashboard
+                ctx.strokeStyle = 'rgba(0, 255, 200, 0.08)'; ctx.lineWidth = 1;
+                for (let i = 0; i < w; i += 50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke(); }
+                for (let i = 0; i < h; i += 50) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke(); }
+
+                // Mirino centrale da cabinato radar
+                if (!isMobile) {
+                    ctx.strokeStyle = 'rgba(0, 255, 200, 0.15)';
+                    ctx.beginPath(); ctx.arc(w / 2, h / 2, 200, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(w / 2 - 220, h / 2); ctx.lineTo(w / 2 + 220, h / 2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(w / 2, h / 2 - 220); ctx.lineTo(w / 2, h / 2 + 220); ctx.stroke();
+                }
+
+                // Bracket angolari HUD (Grigi anziché bianchi)
+                ctx.strokeStyle = '#888888'; ctx.lineWidth = 4; const cl = 40;
+                ctx.beginPath(); ctx.moveTo(15, 15 + cl); ctx.lineTo(15, 15); ctx.lineTo(15 + cl, 15); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(w - 15 - cl, 15); ctx.lineTo(w - 15, 15); ctx.lineTo(w - 15, 15 + cl); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(15, h - 15 - cl); ctx.lineTo(15, h - 15); ctx.lineTo(15 + cl, h - 15); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(w - 15 - cl, h - 15); ctx.lineTo(w - 15, h - 15); ctx.lineTo(w - 15, h - 15 - cl); ctx.stroke();
+
+                // Testi HUD dettagliati
+                ctx.font = `20px 'VT323', monospace`; ctx.fillStyle = COLORS.terminalGreen; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+                if (isMobile) {
+                    ctx.fillText(`SYS.BOOT`, 15, 20);
+                } else {
+                    ctx.fillText(`SYS.BOOT V2.4 // ALL SYSTEMS NOMINAL`, 25, 25);
+                    ctx.fillText(`MEM: 640K BASE / 8192K EXT`, 25, 45);
+                    ctx.fillStyle = 'rgba(51, 255, 51, 0.6)';
+                    ctx.fillText(`CPU: OK`, 25, 75);
+                    ctx.fillText(`VRAM: 0x04F2`, 25, 95);
+                }
+                ctx.textAlign = 'right';
+                if (!isMobile) {
+                    ctx.fillStyle = COLORS.terminalGreen; ctx.fillText("SECTOR 7G", w - 25, 25);
+                    ctx.fillStyle = COLORS.cyan; ctx.fillText("ONLINE", w - 25, 45);
+                }
+                ctx.fillStyle = COLORS.terminalGreen;
+                const blinkCursor = Math.floor(time / 500) % 2 === 0;
+                ctx.fillText(`AWAITING_INPUT${blinkCursor ? '_' : ' '}`, w - 25, h - 35);
+
+                ctx.textAlign = 'center'; ctx.textBaseline = 'top'; const titleSize = Math.min(w * 0.05, 34); ctx.font = `bold ${titleSize}px 'VT323', monospace`;
+                ctx.fillStyle = COLORS.amber; ctx.shadowBlur = 10; ctx.shadowColor = COLORS.amber; ctx.fillText("> SELEZIONA PERIFERICA HARDWARE <", w / 2, isMobile ? 35 : 45); ctx.shadowBlur = 0;
+                ctx.textBaseline = 'middle';
+
+                // Bottoni Oroscopo
+                for (let i = 0; i < this.buttons.length; i++) {
+                    const b = this.buttons[i]; const isSelected = this.selectedIndex === i;
+                    const sign = OROSCOPO_DATA[i].sign; const theme = CONSOLE_THEMES[sign];
+                    ctx.save();
+
+                    if (isSelected && !this.app.isTouchDevice) ctx.translate(0, -4);
+
+                    // Sfondo Base Bottone 3D
+                    ctx.fillStyle = isSelected ? '#333' : '#111';
+                    ctx.fillRect(b.x, b.y, b.w, b.h);
+
+                    // Cornice 3D (Bevel Arcade)
+                    const bz = Math.max(4, b.w * 0.04);
+                    ctx.fillStyle = isSelected ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+                    ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(b.x + b.w, b.y); ctx.lineTo(b.x + b.w - bz, b.y + bz); ctx.lineTo(b.x + bz, b.y + bz); ctx.lineTo(b.x + bz, b.y + b.h - bz); ctx.lineTo(b.x, b.y + b.h); ctx.fill();
+                    ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                    ctx.beginPath(); ctx.moveTo(b.x + b.w, b.y + b.h); ctx.lineTo(b.x, b.y + b.h); ctx.lineTo(b.x + bz, b.y + b.h - bz); ctx.lineTo(b.x + b.w - bz, b.y + b.h - bz); ctx.lineTo(b.x + b.w - bz, b.y + bz); ctx.lineTo(b.x + b.w, b.y); ctx.fill();
+
+                    const inner = { x: b.x + bz, y: b.y + bz, w: b.w - bz * 2, h: b.h - bz * 2 };
+
+                    ctx.save();
+                    ctx.beginPath(); ctx.rect(inner.x, inner.y, inner.w, inner.h); ctx.clip();
+
+                    ctx.fillStyle = theme.bg;
+                    ctx.fillRect(inner.x, inner.y, inner.w, inner.h);
+
+                    // Disegno grafico specifico
+                    if (sign === 'Cancro') {
+                        const r = 5; ctx.fillStyle = '#0066b3'; ctx.beginPath(); ctx.arc(inner.x + inner.w - 15, inner.y + 15, r, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#e50012'; ctx.beginPath(); ctx.arc(inner.x + inner.w - 15, inner.y + inner.h - 15, r, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#ffcb05'; ctx.beginPath(); ctx.arc(inner.x + 15, inner.y + inner.h - 15, r, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#00a94f'; ctx.beginPath(); ctx.arc(inner.x + 15, inner.y + 15, r, 0, Math.PI * 2); ctx.fill();
+                    } else if (sign === 'Ariete') {
+                        ctx.strokeStyle = theme.text; ctx.lineWidth = 4; ctx.strokeRect(inner.x + 6, inner.y + 6, inner.w - 12, inner.h - 12);
+                    } else if (sign === 'Gemelli') {
+                        ctx.fillStyle = '#f0f8ff'; ctx.fillRect(inner.x + 4, inner.y + 4, inner.w - 8, inner.h / 2 - 6); ctx.fillRect(inner.x + 4, inner.y + inner.h / 2 + 2, inner.w - 8, inner.h / 2 - 6);
+                    } else if (sign === 'Acquario') {
+                        ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2; ctx.strokeRect(inner.x + 2, inner.y + 2, inner.w - 4, inner.h - 4); ctx.strokeStyle = 'rgba(255,0,0,0.3)'; ctx.lineWidth = 1; for (let l = 0; l < inner.h; l += 4) { ctx.beginPath(); ctx.moveTo(inner.x, inner.y + l); ctx.lineTo(inner.x + inner.w, inner.y + l); ctx.stroke(); }
+                    } else if (sign === 'Scorpione') {
+                        ctx.fillStyle = 'rgba(0, 255, 0, 0.2)'; ctx.beginPath(); ctx.moveTo(inner.x + inner.w / 2, inner.y + 5); ctx.lineTo(inner.x + inner.w - 5, inner.y + inner.h - 5); ctx.lineTo(inner.x + 5, inner.y + inner.h - 5); ctx.fill();
+                    } else if (sign === 'Toro') {
+                        const grad = ctx.createLinearGradient(inner.x, inner.y, inner.x + inner.w, inner.y); grad.addColorStop(0, '#555'); grad.addColorStop(0.5, '#eee'); grad.addColorStop(1, '#555'); ctx.fillStyle = grad; ctx.fillRect(inner.x + 2, inner.y + 2, inner.w - 4, Math.min(15, inner.h / 3)); ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2; ctx.strokeRect(inner.x + 2, inner.y + 2, inner.w - 4, inner.h - 4);
+                    } else { ctx.strokeStyle = theme.title || theme.text; ctx.lineWidth = 2; ctx.strokeRect(inner.x, inner.y, inner.w, inner.h); }
+
+                    if (!isSelected) { ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(inner.x, inner.y, inner.w, inner.h); }
+                    ctx.strokeStyle = isSelected ? '#888888' : 'rgba(150, 150, 150, 0.1)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(inner.x, inner.y, inner.w, inner.h);
+                    ctx.restore();
+
+                    if (isSelected && !this.app.isTouchDevice) {
+                        ctx.shadowBlur = 15; ctx.shadowColor = theme.console || COLORS.cyan;
+                        ctx.strokeStyle = '#888888'; ctx.lineWidth = 2;
+                        ctx.strokeRect(b.x - 1, b.y - 1, b.w + 2, b.h + 2);
+                        ctx.shadowBlur = 0;
+                    }
+
+                    const fontSize = Math.min(28, b.w * 0.18);
+                    ctx.font = `${fontSize}px 'VT323', monospace`;
+                    const label = isSelected ? `> ${b.label.toUpperCase()} <` : b.label.toUpperCase();
+                    const textW = ctx.measureText(label).width;
+                    ctx.fillStyle = isSelected ? 'rgba(0, 0, 0, 0.85)' : 'rgba(0, 0, 0, 0.65)';
+                    ctx.fillRect(b.x + b.w / 2 - textW / 2 - 10, b.y + b.h / 2 - fontSize / 2 - 4, textW + 20, fontSize + 8);
+                    ctx.fillStyle = isSelected ? '#ffffff' : '#aaaaaa';
+                    if (isSelected) { ctx.shadowBlur = 8; ctx.shadowColor = theme.console || '#ffffff'; }
+                    ctx.fillText(label, b.x + b.w / 2, b.y + b.h / 2); ctx.shadowBlur = 0;
+
+                    if (isSelected && Math.floor(time / 300) % 2 === 0) {
+                        ctx.fillStyle = '#ff0033'; ctx.shadowBlur = 5; ctx.shadowColor = '#ff0033';
+                        ctx.font = `${Math.max(16, b.w * 0.1)}px 'VT323', monospace`;
+                        ctx.fillText("1P", inner.x + 14, inner.y + 14);
+                    }
+                    ctx.restore();
+                }
+
+                ctx.textAlign = 'center'; ctx.font = `20px 'VT323', monospace`; ctx.fillStyle = COLORS.terminalGreen;
+                ctx.fillText(isMobile ? "[TAP] PER SELEZIONARE" : "[↑↓←→] MUOVI    [ENTER] SELEZIONA    [MOUSE] PUNTA E CLICCA", w / 2, h - 25); ctx.restore();
+            }
+            getWrapTextLines(context, text, maxWidth) {
+                let words = text.split(' '); let lines = []; let currentLine = words[0];
+                for (let i = 1; i < words.length; i++) {
+                    let width = context.measureText(currentLine + " " + words[i]).width;
+                    if (width < maxWidth) currentLine += " " + words[i]; else { lines.push(currentLine); currentLine = words[i]; }
+                }
+                lines.push(currentLine); return lines;
+            }
+
+            drawDetailView(ctx, w, h) {
+                const area = this.mainArea; const data = OROSCOPO_DATA[this.selectedIndex]; const themeName = data.sign;
+                const currentTheme = CONSOLE_THEMES[themeName]; const progress = this.textAnim.progress;
+                const isPortrait = area.h > area.w;
+                ctx.save();
+                ctx.fillStyle = this.isBackHovered ? '#114411' : 'rgba(0,0,0,0.8)'; ctx.fillRect(this.backBtn.x, this.backBtn.y, this.backBtn.w, this.backBtn.h);
+                ctx.strokeStyle = COLORS.terminalGreen; ctx.lineWidth = 1; ctx.strokeRect(this.backBtn.x, this.backBtn.y, this.backBtn.w, this.backBtn.h);
+                ctx.fillStyle = COLORS.terminalGreen; ctx.font = `24px 'VT323', monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText("◄ BACK", this.backBtn.x + this.backBtn.w / 2, this.backBtn.y + this.backBtn.h / 2);
+                ctx.save();
+                ctx.beginPath(); ctx.rect(area.x, area.y, area.w, area.h); ctx.clip();
+                currentTheme.drawBg(ctx, area, performance.now());
+                ctx.restore();
+                ctx.save();
+                const headerY = area.y + Math.max(10, h * 0.02);
+                const titleFontSize = isPortrait ? Math.min(50, area.w * 0.12) : Math.min(65, area.w * 0.12);
+                ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.font = `${titleFontSize}px 'VT323', monospace`;
+                const titleText = `[ ${themeName.toUpperCase()} ]`;
+                ctx.lineWidth = 5; ctx.strokeStyle = '#000000'; ctx.strokeText(titleText, area.x + area.w / 2, headerY);
+                ctx.fillStyle = '#ffffff';
+                if (currentTheme.titleShadow) { ctx.shadowColor = currentTheme.titleShadow; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3; ctx.shadowBlur = 5; }
+                else { ctx.shadowColor = '#000000'; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3; ctx.shadowBlur = 5; }
+                ctx.fillText(titleText, area.x + area.w / 2, headerY);
+                ctx.restore();
+                const headerBottom = headerY + titleFontSize + (isPortrait ? 15 : 25);
+                const panelX = area.x + (isPortrait ? 10 : 20);
+                const panelY = headerBottom;
+                const panelW = area.w - (isPortrait ? 20 : 40);
+                const panelH = (area.y + area.h) - headerBottom - (isPortrait ? 15 : 25);
+                const cx = panelX + panelW / 2;
+                const cy = panelY + panelH / 2;
+                ctx.save();
+                if (progress < 1) {
+                    switch (themeName) {
+                        case 'Ariete': let steps = 8; let p = Math.floor(progress * steps) / steps; ctx.beginPath(); ctx.rect(panelX, panelY, panelW, panelH * p); ctx.clip(); break;
+                        case 'Toro': ctx.translate(0, (1 - progress) * -800 + Math.abs(Math.sin(progress * Math.PI * 3)) * (1 - progress) * 80); ctx.globalAlpha = progress; break;
+                        case 'Gemelli': ctx.translate(cx, cy); ctx.scale(1, progress); ctx.translate(-cx, -cy); break;
+                        case 'Cancro': ctx.translate(cx, cy); ctx.scale(progress, progress * progress); ctx.translate(-cx, -cy); ctx.globalAlpha = progress; break;
+                        case 'Leone': ctx.translate((1 - Math.pow(progress, 4)) * w, 0); break;
+                        case 'Vergine': ctx.globalAlpha = progress; if (Math.random() > progress) ctx.translate((Math.random() - 0.5) * 60, 0); break;
+                        case 'Bilancia': ctx.translate(cx, cy); ctx.rotate((1 - progress) * Math.PI * 2); ctx.scale(progress, progress); ctx.translate(-cx, -cy); ctx.globalAlpha = progress; break;
+                        case 'Scorpione': ctx.translate(cx, cy); ctx.scale(0.8 + 0.2 * progress, 0.8 + 0.2 * progress); ctx.translate(-cx, -cy); ctx.globalAlpha = progress; break;
+                        case 'Sagittario': ctx.translate(cx, cy); ctx.scale(1.2 - 0.2 * progress, 1.2 - 0.2 * progress); ctx.translate(-cx, -cy); ctx.globalAlpha = Math.pow(progress, 2); break;
+                        case 'Capricorno': ctx.beginPath(); for (let i = 0; i < panelH; i += 12) if (progress > 0.5 || (i / 12) % 2 === 0) ctx.rect(panelX, panelY + panelH - (i + 12 * Math.min(1, progress * 2)), panelW, 12 * Math.min(1, progress * 2)); ctx.clip(); break;
+                        case 'Acquario': ctx.beginPath(); ctx.rect(panelX, panelY, panelW, panelH * progress); ctx.clip(); break;
+                        case 'Pesci': ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, Math.max(w, h), -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * progress)); ctx.lineTo(cx, cy); ctx.clip(); break;
+                    }
+                }
+                ctx.fillStyle = 'rgba(5, 5, 5, 0.85)';
+                ctx.fillRect(panelX, panelY, panelW, panelH);
+                let frameColor = currentTheme.console || COLORS.terminalGreen;
+                if (frameColor.toLowerCase() === '#ffffff') frameColor = '#aaaaaa';
+                ctx.strokeStyle = frameColor; ctx.lineWidth = 2; ctx.strokeRect(panelX, panelY, panelW, panelH);
+                ctx.fillStyle = frameColor; const cp = 25; const ct = 4;
+                ctx.fillRect(panelX, panelY, cp, ct); ctx.fillRect(panelX, panelY, ct, cp);
+                ctx.fillRect(panelX + panelW - cp, panelY, cp, ct); ctx.fillRect(panelX + panelW - ct, panelY, ct, cp);
+                ctx.fillRect(panelX, panelY + panelH - ct, cp, ct); ctx.fillRect(panelX, panelY + panelH - cp, ct, cp);
+                ctx.fillRect(panelX + panelW - cp, panelY + panelH - ct, cp, ct); ctx.fillRect(panelX + panelW - ct, panelY + panelH - cp, ct, cp);
+                const padding = isPortrait ? 20 : 35;
+                let leftColX, leftColW, rightColX, rightColW;
+                if (isPortrait) { leftColX = panelX + padding; leftColW = panelW - padding * 2; rightColX = leftColX; rightColW = leftColW; }
+                else { const columnGap = 40; leftColW = (panelW - padding * 2 - columnGap) * 0.55; rightColW = (panelW - padding * 2 - columnGap) * 0.45; leftColX = panelX + padding; rightColX = leftColX + leftColW + columnGap; }
+                const textBlockW = isPortrait ? leftColW : leftColW * 0.90;
+                const horizontalOffset = isPortrait ? 0 : (leftColW - textBlockW) / 2;
+                const textDrawX = leftColX + horizontalOffset;
+                const bodyFontSize = isPortrait ? Math.min(20, area.w * 0.05) : Math.min(26, area.w * 0.045);
+                ctx.font = `${bodyFontSize}px 'VT323', monospace`;
+                const lineHeight = bodyFontSize * 1.2;
+                const lines = this.getWrapTextLines(ctx, data.text, textBlockW);
+                const specFontSize = isPortrait ? Math.min(16, area.w * 0.04) : Math.min(20, area.w * 0.035);
+                ctx.font = `${specFontSize}px 'VT323', monospace`;
+                const specLineHeight = specFontSize * 1.2;
+                const specLines = [];
+                if (data.specs) { data.specs.forEach(spec => { const wrapped = this.getWrapTextLines(ctx, "- " + spec, textBlockW); specLines.push(...wrapped); }); }
+                const consoleFontSize = isPortrait ? Math.min(20, area.w * 0.05) : Math.min(26, area.w * 0.045);
+                ctx.font = `bold ${consoleFontSize}px 'VT323', monospace`;
+                const hwText = ` HW_ID // ${data.console} `;
+                const badgeW = ctx.measureText(hwText).width + 10;
+                const badgeH = consoleFontSize + 8;
+                const hwSpacing = badgeH + (isPortrait ? 10 : 15);
+                const specMarginTop = isPortrait ? 15 : 25;
+                const specTitleHeight = specFontSize * 1.5;
+                const textTotalHeight = hwSpacing + (lines.length * lineHeight) + specMarginTop + specTitleHeight + (specLines.length * specLineHeight);
+                let textStartY;
+                if (isPortrait) { textStartY = panelY + padding; } else { const textAvailableH = panelH - padding * 2; const verticalOffset = Math.max(0, (textAvailableH - textTotalHeight) / 2); textStartY = panelY + padding + verticalOffset; }
+                ctx.save();
+                ctx.beginPath(); ctx.rect(leftColX, panelY + padding, leftColW, panelH - padding * 2); ctx.clip();
+                ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)'; ctx.fillRect(textDrawX, textStartY, badgeW, badgeH);
+                ctx.strokeStyle = frameColor; ctx.lineWidth = 1; ctx.strokeRect(textDrawX, textStartY, badgeW, badgeH);
+                ctx.fillStyle = frameColor; ctx.font = `bold ${consoleFontSize}px 'VT323', monospace`; ctx.fillText(hwText, textDrawX + 5, textStartY + 5);
+                ctx.fillStyle = '#FFFFFF'; ctx.font = `${bodyFontSize}px 'VT323', monospace`;
+                const bodyStartY = textStartY + hwSpacing;
+                lines.forEach((l, i) => ctx.fillText(l, textDrawX, bodyStartY + (i * lineHeight)));
+                const specTitleY = bodyStartY + (lines.length * lineHeight) + specMarginTop;
+                ctx.fillStyle = frameColor; ctx.font = `bold ${specFontSize}px 'VT323', monospace`; ctx.fillText("/// SPECIFICHE TECNICHE:", textDrawX, specTitleY);
+                ctx.fillStyle = '#AAAAAA'; ctx.font = `${specFontSize}px 'VT323', monospace`;
+                const specListStartY = specTitleY + specTitleHeight;
+                specLines.forEach((l, i) => ctx.fillText(l, textDrawX, specListStartY + (i * specLineHeight)));
+                const allTextBottomY = specListStartY + (specLines.length * specLineHeight);
+                ctx.restore();
+                if (data.img && data.img.complete && data.img.naturalWidth > 0) {
+                    ctx.save();
+                    let imgMaxW = rightColW; let imgMaxH, imgX, imgY;
+                    if (isPortrait) {
+                        imgMaxH = panelH - padding * 3 - textTotalHeight;
+                        if (imgMaxH > 60) {
+                            const scale = Math.min(imgMaxW / data.img.naturalWidth, imgMaxH / data.img.naturalHeight);
+                            const drawW = data.img.naturalWidth * scale; const drawH = data.img.naturalHeight * scale;
+                            imgX = rightColX + (imgMaxW - drawW) / 2; imgY = allTextBottomY + padding + (imgMaxH - drawH) / 2;
+                            ctx.fillStyle = '#000'; ctx.fillRect(imgX - 4, imgY - 4, drawW + 8, drawH + 8); ctx.drawImage(data.img, imgX, imgY, drawW, drawH);
+                            ctx.strokeStyle = 'rgba(150,150,150,0.6)'; ctx.lineWidth = 2; ctx.strokeRect(imgX, imgY, drawW, drawH);
+                        }
+                    } else {
+                        imgMaxH = panelH - padding * 2;
+                        const scale = Math.min(imgMaxW / data.img.naturalWidth, imgMaxH / data.img.naturalHeight);
+                        const drawW = data.img.naturalWidth * scale; const drawH = data.img.naturalHeight * scale;
+                        imgX = rightColX + (imgMaxW - drawW) / 2; imgY = panelY + padding + (imgMaxH - drawH) / 2;
+                        ctx.fillStyle = '#000'; ctx.fillRect(imgX - 4, imgY - 4, drawW + 8, drawH + 8); ctx.drawImage(data.img, imgX, imgY, drawW, drawH);
+                        ctx.strokeStyle = 'rgba(150,150,150,0.6)'; ctx.lineWidth = 2; ctx.strokeRect(imgX, imgY, drawW, drawH);
+                    }
+                    ctx.restore();
+                }
+                if (progress < 1) {
+                    if (themeName === 'Acquario') { ctx.fillStyle = '#ff0000'; ctx.shadowBlur = 15; ctx.shadowColor = '#ff0000'; ctx.fillRect(panelX, panelY + panelH * progress - 2, panelW, 4); ctx.shadowBlur = 0; }
+                    else if (themeName === 'Leone') { ctx.fillStyle = `rgba(255, 255, 255, ${1 - progress})`; ctx.fillRect(panelX, panelY, panelW, panelH); }
+                } else if (Math.floor(performance.now() / 400) % 2 === 0) {
+                    ctx.fillStyle = currentTheme.text; ctx.font = `${specFontSize}px 'VT323', monospace`;
+                    let lastLineWidth = 0;
+                    if (specLines.length > 0) { lastLineWidth = ctx.measureText(specLines[specLines.length - 1]).width; } else { ctx.font = `${bodyFontSize}px 'VT323', monospace`; lastLineWidth = ctx.measureText(lines[lines.length - 1]).width; }
+                    ctx.fillRect(textDrawX + lastLineWidth + 5, allTextBottomY - specLineHeight + 4, specFontSize / 2, specFontSize * 0.8);
+                }
+                ctx.restore(); ctx.restore();
+            }
+            executeSelection() { this.subState = 'DETAIL_VIEW'; this.loadSignData(this.selectedIndex); this.app.audio.playMenuBlip(); this.app.addMiniGlitch(); }
+            goBack() { this.subState = 'MENU_VIEW'; this.textAnim.finishInstantly(); this.app.audio.playMenuBlip(); this.app.addMiniGlitch(); }
+            handleClick() {
+                if (this.subState === 'MENU_VIEW' && this.selectedIndex !== -1) this.executeSelection();
+                else if (this.subState === 'DETAIL_VIEW') { if (this.isBackHovered) this.goBack(); else if (this.textAnim.progress < 1) this.textAnim.finishInstantly(); }
+            }
+        }
+
+        /**
+         * Controller Principale dell'Applicazione
+         */
+        class App {
+            constructor() {
+                this.canvas = document.getElementById('app'); this.ctx = this.canvas.getContext('2d', { alpha: false });
+                this.audio = new RetroAudio(); this.mouseX = -100; this.mouseY = -100;
+                this.isTouchDevice = false; this.currentState = 'intro'; this.activeScene = new IntroScene(this);
+                this.particles = new ParticleSystem(window.innerWidth, window.innerHeight);
+                this.glitchTimer = 0; this.miniGlitchTimer = 0; this.scanlinePattern = null;
+                this.initEvents(); this.resize();
+                requestAnimationFrame((t) => this.loop(t));
+            }
+            initEvents() {
+                window.addEventListener('resize', () => this.resize());
+                const updateMousePos = (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    let clientX = e.clientX; let clientY = e.clientY;
+                    if (e.touches && e.touches.length > 0) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+                    this.mouseX = clientX - rect.left; this.mouseY = clientY - rect.top;
+                };
+                this.canvas.addEventListener('mousemove', updateMousePos);
+                this.canvas.addEventListener('touchstart', (e) => { this.isTouchDevice = true; updateMousePos(e); }, { passive: false });
+                this.canvas.addEventListener('touchmove', updateMousePos, { passive: false });
+                this.canvas.addEventListener('click', () => { if (this.currentState !== 'glitching' && this.activeScene && this.activeScene.handleClick) this.activeScene.handleClick(); });
+                window.addEventListener('keydown', (e) => { if (this.currentState === 'glitching') return; if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].indexOf(e.code) > -1) e.preventDefault(); if (this.activeScene && this.activeScene.handleKeyDown) this.activeScene.handleKeyDown(e); });
+            }
+            resize() {
+                const dpr = window.devicePixelRatio || 1;
+                this.width = window.innerWidth; this.height = window.innerHeight;
+                this.canvas.width = this.width * dpr; this.canvas.height = this.height * dpr;
+                this.canvas.style.width = `${this.width}px`; this.canvas.style.height = `${this.height}px`;
+                this.ctx.scale(dpr, dpr); this.particles.resize(this.width, this.height); this.createScanlinesPattern();
+            }
+            createScanlinesPattern() {
+                const offscreen = document.createElement('canvas'); offscreen.width = 1; offscreen.height = 4;
+                const ctx = offscreen.getContext('2d'); ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; ctx.fillRect(0, 0, 1, 2);
+                this.scanlinePattern = this.ctx.createPattern(offscreen, 'repeat');
+            }
+            triggerGlitchTransition() {
+                this.currentState = 'glitching'; this.glitchTimer = performance.now(); this.audio.playGlitchSound();
+                setTimeout(() => { this.currentState = 'dashboard'; this.activeScene = new DashboardScene(this); this.mouseX = -100; this.audio.startBGM(); }, 800);
+            }
+            addMiniGlitch() { this.miniGlitchTimer = 10; }
+            drawPostProcessing(time) {
+                const w = this.width; const h = this.height;
+                if (this.scanlinePattern) { this.ctx.fillStyle = this.scanlinePattern; this.ctx.fillRect(0, 0, w, h); }
+                const rollY = (time / 15) % (h * 1.5) - (h * 0.25);
+                const rollGrad = this.ctx.createLinearGradient(0, rollY, 0, rollY + h * 0.15);
+                rollGrad.addColorStop(0, 'rgba(255, 255, 255, 0)'); rollGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.03)'); rollGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                this.ctx.fillStyle = rollGrad; this.ctx.fillRect(0, rollY, w, h * 0.15);
+                const flicker = Math.random() * 0.02;
+                const gradient = this.ctx.createRadialGradient(w / 2, h / 2, h * 0.5, w / 2, h / 2, h);
+                gradient.addColorStop(0, `rgba(0,0,0,${0 + flicker})`); gradient.addColorStop(1, `rgba(0,0,0,${0.6 + flicker})`);
+                this.ctx.fillStyle = gradient; this.ctx.fillRect(0, 0, w, h);
+            }
+            drawGlitchEffect(time) {
+                const w = this.width; const h = this.height; const elapsed = time - this.glitchTimer;
+                this.ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000'; this.ctx.fillRect(0, 0, w, h);
+                for (let i = 0; i < 20; i++) { this.ctx.fillStyle = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`; this.ctx.fillRect(0, Math.random() * h, w, Math.random() * 50); }
+                if (elapsed > 600) { this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, w, h); this.ctx.fillStyle = '#fff'; this.ctx.fillRect(0, h / 2 - 2, w, 4); }
+            }
+            drawCrosshair() {
+                if (this.isTouchDevice) return;
+                const ctx = this.ctx; ctx.save(); ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = COLORS.terminalGreen; ctx.lineWidth = 2; ctx.shadowBlur = 5; ctx.shadowColor = COLORS.terminalGreen;
+                ctx.beginPath(); ctx.moveTo(this.mouseX - 12, this.mouseY); ctx.lineTo(this.mouseX - 4, this.mouseY); ctx.moveTo(this.mouseX + 4, this.mouseY); ctx.lineTo(this.mouseX + 12, this.mouseY); ctx.moveTo(this.mouseX, this.mouseY - 12); ctx.lineTo(this.mouseX, this.mouseY - 4); ctx.moveTo(this.mouseX, this.mouseY + 4); ctx.lineTo(this.mouseX, this.mouseY + 12); ctx.stroke();
+                ctx.fillStyle = '#ff0033'; ctx.shadowColor = '#ff0033'; ctx.fillRect(this.mouseX - 1, this.mouseY - 1, 2, 2); ctx.restore();
+            }
+            loop(time) {
+                this.ctx.save(); this.ctx.setTransform(1, 0, 0, 1, 0, 0); this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.ctx.restore();
+                this.ctx.globalCompositeOperation = 'source-over'; this.ctx.fillStyle = COLORS.bg; this.ctx.fillRect(0, 0, this.width, this.height);
+                this.particles.update(); this.particles.draw(this.ctx);
+                if (this.currentState === 'intro' || this.currentState === 'dashboard') {
+                    if (this.miniGlitchTimer > 0) { this.ctx.save(); this.ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10); this.miniGlitchTimer--; }
+                    if (this.activeScene) { this.activeScene.update(time, this.mouseX, this.mouseY); this.activeScene.draw(this.ctx, this.width, this.height); }
+                    if (this.miniGlitchTimer > 0) this.ctx.restore();
+                } else if (this.currentState === 'glitching') { this.drawGlitchEffect(time); }
+                this.drawPostProcessing(time); this.drawCrosshair();
+                requestAnimationFrame((t) => this.loop(t));
+            }
+        }
+        document.fonts.ready.then(() => { new App(); });
+    </script>
+</body>
+
+</html>

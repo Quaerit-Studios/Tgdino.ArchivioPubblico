@@ -1,33 +1,32 @@
-news:
-  - id: 1
-    title: "Starfield e DLSS"
-    description: | 
+- id: 1
+  title: "Starfield e DLSS"
+  description: | 
       Bethesda è intervenuta ufficialmente per rassicurare i giocatori di Starfield
       in seguito alle polemiche scaturite dall'implementazione della nuova tecnologia Nvidia DLSS 5.
       L'aggiornamento, pur promettendo elevate prestazioni, era stato duramente criticato
       per aver reso i volti degli NPC innaturali, con un effetto "AI-like" che ne distorceva i lineamenti.
       L'azienda ha confermato che ogni modifica visiva rimarrà sotto il rigoroso controllo
       dei propri artisti per preservare l'integrità estetica del gioco.
-    links:
+  links:
       - "https://link1.com"
       - "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
   
-  - id: 2
-    title: "Tim Sweeney: il CEO di Epic Games investe nelle foreste"
-    description: | 
+- id: 2
+  title: "Tim Sweeney: il CEO di Epic Games investe nelle foreste"
+  description: | 
       Il padre di Fortnite sta portando avanti una missione ecologica silenziosa ma mastodontica. 
       Dal 2008 ad oggi, ha acquistato oltre 50mila acri (circa 202 km²) di foreste e aree naturali nella Carolina del Nord. 
       Non lo fa per speculazione edilizia, ma per l'esatto opposto: proteggere il territorio dai costruttori e preservare la biodiversità per le generazioni future.
-    links:
+  links:
       - "https://link1.com"
       - "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-
-  - id: 3
-    title: "Dune - Parte Tre: Il trailer italiano svela l'ascesa e la caduta del Messia"
-    description: | 
+      
+- id: 3
+  title: "Dune - Parte Tre: Il trailer italiano svela l'ascesa e la caduta del Messia"
+  description: | 
       Warner Bros. ha rilasciato oggi, 17 marzo 2026, il primo trailer ufficiale in italiano di Dune - Parte Tre. 
       Il capitolo conclusivo della trilogia di Denis Villeneuve arriverà nelle sale il 18 dicembre 2026, adattando le vicende di Messia di Dune. 
       Il film ci proietta in un futuro dove Paul Atreides, ormai Imperatore, deve gestire una guerra santa fuori controllo e una cospirazione che minaccia la sua stirpe.
-    links:
+  links:
       - "https://link1.com"
       - "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
