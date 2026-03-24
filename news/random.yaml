@@ -1,29 +1,7 @@
 - id: 1
-  title: "Titolo Notizia Random #1"
+  title: "La scienza lo conferma: la \"depressione da fine gioco\" esiste (e i GDR sono i principali colpevoli)"
   description: |
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Nulla facilisi. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Se ti è mai capitato di fissare i titoli di coda di un videogioco sentendo un profondo senso di vuoto, sappi che non sei il solo e, soprattutto, non te lo sei immaginato. 
+    Uno studio recente pubblicato sulla rivista scientifica Current Psychology ha ufficialmente analizzato e confermato l'esistenza della "post-game depression" (depressione da fine gioco).
   links:
-  - "https://example.com/link1"
-  - "https://example.com/video1"
-
-- id: 2
-  title: "Titolo Notizia Random #2"
-  description: |
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. 
-    Sed nisi. Nulla quis sem at nibh elementum imperdiet.
-  links:
-  - "https://example.com/link2"
-  - "https://example.com/video2"
-
-- id: 3
-  title: "Titolo Notizia Random #3"
-  description: |
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Fusce nec tellus sed augue semper porta. Mauris massa. 
-    Vestibulum lacinia arcu eget nulla.
-  links:
-  - "https://example.com/link3"
-  - "https://example.com/video3"
+  - "https://multiplayer.it/notizie/secondo-uno-studio-la-depressione-da-fine-gioco-esiste-ed-e-causata-specialmente-dai-gdr.html"
