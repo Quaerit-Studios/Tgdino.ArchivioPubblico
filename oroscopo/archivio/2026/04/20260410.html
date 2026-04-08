@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Oroscopo Settimanale di Dino</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'honeydew': { 50: "#f3f9ec", 100: "#e7f3d8", 200: "#cfe7b1", 300: "#b6da8b", 400: "#9ece64", 500: "#86c23d", 600: "#6b9b31", 700: "#507425", 800: "#364e18", 900: "#1b270c", 950: "#131b09" },
+                        'celadon': { 50: "#f1f6ee", 100: "#e4eedd", 200: "#c8ddbb", 300: "#adcc99", 400: "#91bb77", 500: "#76aa55", 600: "#5e8844", 700: "#476633", 800: "#2f4422", 900: "#182211", 950: "#10180c" },
+                        'vanilla-custard': { 50: "#f6f6ee", 100: "#eeeedd", 200: "#ddddbb", 300: "#cccc99", 400: "#bbbb77", 500: "#aaaa55", 600: "#888844", 700: "#666633", 800: "#444422", 900: "#222211", 950: "#18180c" },
+                        'honey-bronze': { 50: "#fdf5e8", 100: "#faead1", 200: "#f5d6a3", 300: "#f0c175", 400: "#ecac46", 500: "#e79818", 600: "#b97913", 700: "#8a5b0f", 800: "#5c3d0a", 900: "#2e1e05", 950: "#201503" },
+                        'amber-earth': { 50: "#fdf3e8", 100: "#fae6d1", 200: "#f5cda3", 300: "#f0b575", 400: "#ec9c46", 500: "#e78318", 600: "#b96913", 700: "#8a4f0f", 800: "#5c340a", 900: "#2e1a05", 950: "#201203" }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Jost (Simile a Futura) e Playfair Display (Serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body
+    class="w-screen h-screen overflow-hidden bg-amber-earth-950 font-[Jost,sans-serif] text-amber-earth-950 selection:bg-honey-bronze-300 selection:text-amber-earth-950">
+
+    <!-- FASE 1: Schermata Iniziale -->
+    <main id="phase-1"
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center transition-opacity duration-[1200ms] ease-in-out opacity-100 bg-[url('https://www.thenation.com/wp-content/uploads/2023/06/AC_FP_00119.jpg')] bg-cover bg-center bg-no-repeat">
+        <!-- Pannello e sfondo -->
+        <div class="absolute inset-0 bg-vanilla-custard-50/20 backdrop-blur-[2px]"></div>
+
+        <div
+            class="flex flex-col items-center justify-center p-12 border-4 border-amber-earth-950 bg-honey-bronze-300 relative outline outline-2 outline-offset-4 outline-amber-earth-950 max-w-2xl text-center shadow-[12px_12px_0px_0px_#201203] z-10">
+            <span
+                class="text-sm tracking-[0.3em] uppercase mb-4 border-b-2 border-amber-earth-950 pb-2 font-bold">Un'esplorazione
+                astrologica</span>
+            <h1
+                class="text-5xl md:text-6xl font-bold uppercase tracking-[0.1em] leading-tight mb-8 font-[Jost,sans-serif]">
+                L'Oroscopo<br>Settimanale<br>di Dino
+            </h1>
+            <p class="font-[Playfair_Display,serif] italic text-lg mb-10 text-amber-earth-900">
+                "Il destino è una questione di tempismo e bagagli smarriti"
+            </p>
+            <button id="btn-start"
+                class="px-8 py-3 bg-celadon-300 border-2 border-amber-earth-950 text-amber-earth-950 font-bold tracking-widest uppercase hover:bg-vanilla-custard-50 hover:scale-105 transition-[transform,background-color] duration-300 active:scale-95 shadow-[4px_4px_0px_0px_#201203]">
+                Inizia l'Esplorazione
+            </button>
+        </div>
+    </main>
+
+    <!-- FASE 2: Transizione -->
+    <div id="cinema-bar-top"
+        class="absolute top-0 left-0 w-full h-[15vh] bg-[#0a0a0a] z-40 transition-transform duration-[800ms] ease-[cubic-bezier(0.77,0,0.175,1)] -translate-y-full pointer-events-none">
+    </div>
+    <div id="cinema-bar-bottom"
+        class="absolute bottom-0 left-0 w-full h-[15vh] bg-[#0a0a0a] z-40 transition-transform duration-[800ms] ease-[cubic-bezier(0.77,0,0.175,1)] translate-y-full pointer-events-none">
+    </div>
+    <div id="film-grain"
+        class="absolute inset-0 z-30 bg-honey-bronze-400 mix-blend-overlay opacity-0 transition-opacity duration-300 pointer-events-none">
+    </div>
+
+    <!-- FASE 3: Cinema -->
+    <div id="phase-3-wrapper"
+        class="absolute inset-0 z-0 opacity-0 transition-opacity duration-[1200ms] ease-in-out bg-[url('https://img.freepik.com/free-photo/view-3d-cinema-theatre-room_23-2150866047.jpg?semt=ais_rp_50_assets&w=740&q=80')] bg-cover bg-center bg-no-repeat">
+
+        <!-- Locandine e colori -->
+        <div class="absolute inset-0 bg-amber-earth-950/40 backdrop-blur-[3px] pointer-events-none z-0"></div>
+
+        <!-- Frecce di Navigazione (Nella Fase 3) -->
+        <button id="btn-scroll-left"
+            class="absolute top-1/2 -translate-y-1/2 left-4 md:left-8 z-30 w-16 h-16 rounded-full bg-vanilla-custard-50 border-4 border-amber-earth-950 flex items-center justify-center hover:scale-110 hover:bg-honey-bronze-300 transition-all shadow-[4px_4px_0px_0px_#201203] group hidden opacity-60 hover:opacity-100">
+            <span
+                class="text-2xl font-bold text-amber-earth-950 -ml-1 group-hover:-translate-x-1 transition-transform">&larr;</span>
+        </button>
+        <button id="btn-scroll-right"
+            class="absolute top-1/2 -translate-y-1/2 right-4 md:right-8 z-30 w-16 h-16 rounded-full bg-vanilla-custard-50 border-4 border-amber-earth-950 flex items-center justify-center hover:scale-110 hover:bg-honey-bronze-300 transition-all shadow-[4px_4px_0px_0px_#201203] group hidden opacity-60 hover:opacity-100">
+            <span
+                class="text-2xl font-bold text-amber-earth-950 -mr-1 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </button>
+
+        <!-- Scorrimento delle Locandine -->
+        <section id="phase-3-scroll"
+            class="absolute inset-0 z-20 flex items-center overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-[10vw] lg:px-[5vw] scroll-smooth pb-[5vh]">
+            <!-- Aggiustato il gap per far entrare esattamente 3 elementi su desktop -->
+            <div id="posters-container"
+                class="flex gap-6 md:gap-8 lg:gap-12 items-center h-[75vh] py-10 shrink-0 mx-auto">
+                <!-- I poster verranno generati dinamicamente dal JS -->
+            </div>
+        </section>
+    </div>
+
+    <!-- FASE 4: Modale dell'Oroscopo -->
+    <div id="modal-overlay"
+        class="absolute inset-0 z-50 flex opacity-0 pointer-events-none transition-opacity duration-[800ms] ease-in-out backdrop-blur-md bg-vanilla-custard-50/80">
+
+        <!-- Bottone di chiusura -->
+        <button id="btn-close-modal"
+            class="absolute top-8 left-1/2 -translate-x-1/2 z-50 w-12 h-12 rounded-full border-2 border-amber-earth-950 bg-vanilla-custard-200 flex items-center justify-center hover:scale-110 hover:bg-vanilla-custard-50 hover:rotate-90 transition-all duration-500 shadow-[2px_2px_0px_0px_#201203] group">
+            <span class="text-xl font-bold group-hover:text-amber-earth-600 transition-colors">X</span>
+        </button>
+
+        <div class="flex w-full h-full shadow-2xl scale-95 transition-transform duration-[800ms] ease-[cubic-bezier(0.19,1,0.22,1)]"
+            id="modal-content">
+
+            <!-- Parte Principale (Testo Oroscopo) -->
+            <article id="modal-article"
+                class="w-1/2 h-full border-r-4 border-dashed border-amber-earth-950 flex flex-col justify-center items-center p-16 relative transition-colors duration-700">
+                <div class="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-amber-earth-950"></div>
+                <div class="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-amber-earth-950"></div>
+
+                <h2 id="modal-sign"
+                    class="text-4xl uppercase tracking-[0.2em] font-bold border-b-2 border-amber-earth-950 pb-4 mb-8 text-center text-amber-earth-950">
+                </h2>
+                <div class="max-w-md text-center overflow-y-auto">
+                    <p id="modal-horoscope"
+                        class="font-[Playfair_Display,serif] text-xl leading-loose text-amber-earth-900"></p>
+                </div>
+            </article>
+
+            <!-- Sezione Cameo (Info Film) -->
+            <aside id="modal-aside"
+                class="w-1/2 h-full flex flex-col justify-center items-center p-16 relative transition-colors duration-700">
+                <div
+                    class="max-w-md w-full border-4 border-amber-earth-950 bg-vanilla-custard-50 p-8 relative outline outline-2 outline-offset-4 outline-amber-earth-950 shadow-[8px_8px_0px_0px_#201203]">
+                    <span
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-earth-950 text-vanilla-custard-50 px-4 py-1 text-xs uppercase tracking-widest">Archivio
+                        Cinematografico</span>
+
+                    <h3 id="modal-movie-title"
+                        class="text-2xl font-bold uppercase tracking-wider mb-2 text-center mt-4 text-amber-earth-950">
+                    </h3>
+                    <div
+                        class="flex justify-center gap-4 text-xs font-bold uppercase tracking-widest text-amber-earth-950/70 mb-6 border-b border-amber-earth-950 pb-4">
+                        <span id="modal-movie-year"></span>
+                        <span>•</span>
+                        <span id="modal-movie-genre"></span>
+                    </div>
+                    <p id="modal-movie-plot"
+                        class="font-[Playfair_Display,serif] text-md text-center italic text-amber-earth-900"></p>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        /**
+         * L'Oroscopo Settimanale di Dino
+         */
+
+        // Suono del Ciak
+        const ciakSound = new Audio('https://cdn.soundcamp.com/sfx/001/movie-clapper.mp3');
+
+        const zoodiacData = [
+            {
+                sign: 'Capricorno',
+                movie: 'Grand Budapest Hotel',
+                year: '2014',
+                genre: 'Commedia/Avventura',
+                plot: 'Un devoto e raffinato concierge di un lussuoso albergo europeo e il suo giovane protetto vengono trascinati in una rocambolesca fuga dopo essere stati ingiustamente accusati dell\'omicidio di una ricca nobildonna.',
+                horoscope: 'Una questione burocratica o una disputa su un bene che ritenevate di poco valore richiederà la vostra attenzione. Potreste trovarvi a dover giustificare le vostre azioni a persone di pessimo gusto. Mantenete una postura impeccabile e non lasciate trasparire emozioni, formalità ed educazione saranno la vostra migliore via di fuga.',
+                theme: { main: '#FADAE2', accent: '#9B7EAC' },
+                img: 'https://cdn.kobo.com/book-images/812f0477-982f-4eb5-a7bd-c44e7a2412c2/1200/1200/False/the-grand-budapest-hotel-2.jpg'
+            },
+            {
+                sign: 'Acquario',
+                movie: 'Le avventure acquatiche di Steve Zissou',
+                year: '2004',
+                genre: 'Commedia/Drammatico',
+                plot: 'Un eccentrico documentarista marino raduna il suo strampalato equipaggio per un\'ultima, assurda spedizione: trovare e distruggere la misteriosa creatura che ha divorato il suo migliore amico.',
+                horoscope: 'Vi sentite spinti a risolvere un torto subito in passato, anche se la memoria dell\'evento è ormai confusa. È il momento ideale per reclutare conoscenze improbabili e lanciarsi in un progetto che gli altri giudicano irrazionale. La vostra ostinazione causerà qualche attrito in famiglia, ma l\'importante è procedere dritti verso l\'obiettivo.',
+                theme: { main: '#C4DFE6', accent: '#E54B4B' },
+                img: 'https://image.tmdb.org/t/p/original/8723hNsRB1fF4upWCuLzeMZCLzM.jpg'
+            },
+            {
+                sign: 'Pesci',
+                movie: 'I Tenenbaum',
+                year: '2001',
+                genre: 'Drammatico/Commedia',
+                plot: 'Tre fratelli un tempo considerati bambini prodigio, ora adulti delusi e nevrotici, tornano a vivere sotto lo stesso tetto a causa delle manipolazioni di un padre egoista che finge di essere in fin di vita.',
+                horoscope: 'Un talento che avevate accantonato in gioventù tornerà improvvisamente utile per evitare una conversazione sgradevole con un parente. Siete inclini a drammatizzare una situazione sentimentale perfettamente gestibile. Uscite di casa, l\'isolamento volontario ha perso il suo fascino.',
+                theme: { main: '#E8D5B5', accent: '#C23B22' },
+                img: 'https://m.media-amazon.com/images/I/613Z2n+DuTL._AC_UF894,1000_QL80_.jpg'
+            },
+            {
+                sign: 'Ariete',
+                movie: 'Fantastic Mr. Fox',
+                year: '2009',
+                genre: 'Animazione/Avventura',
+                plot: 'Un ladro in pensione cede alla tentazione di un ultimo grande colpo ai danni di tre spietati agricoltori, mettendo in grave pericolo non solo la sua famiglia, ma l\'intera comunità locale.',
+                horoscope: 'La routine vi risulta improvvisamente insopportabile e sarete tentati di prendere scorciatoie moralmente discutibili sul lavoro. Un piano apparentemente geniale comporterà conseguenze disastrose per chi vi sta intorno. Preparatevi a dover trascorrere molto tempo elaborando scuse complesse e poco credibili per i vostri ritardi.',
+                theme: { main: '#F2C94C', accent: '#D97925' },
+                img: 'https://m.media-amazon.com/images/I/71xdMyQVSUL._AC_UF894,1000_QL80_.jpg'
+            },
+            {
+                sign: 'Toro',
+                movie: 'Moonrise Kingdom',
+                year: '2012',
+                genre: 'Romantico/Commedia',
+                plot: 'Nell\'estate del 1965, due dodicenni solitari e incompresi si innamorano e decidono di scappare insieme portando con sé solo lo stretto necessario, innescando una caotica ricerca in tutta l\'isola.',
+                horoscope: 'Sentirete l\'urgenza di allontanarvi da una cerchia sociale che trovate soffocante, pianificando una fuga anche solo per il fine settimana. Le relazioni richiedono più spontaneità. Smettete di catalogare i difetti del partner. Un imprevisto vi costringerà a rivedere i vostri piani, portando a una conversazione inaspettatamente onesta.',
+                theme: { main: '#D6E0D3', accent: '#EAC752' },
+                img: 'https://i.pinimg.com/564x/5e/8a/38/5e8a38262bb5dfaec2ede2632564d3b5.jpg'
+            },
+            {
+                sign: 'Gemelli',
+                movie: 'The French Dispatch',
+                year: '2021',
+                genre: 'Commedia/Antologico',
+                plot: 'Alla morte del direttore di una prestigiosa rivista americana con sede in Francia, la redazione si riunisce per comporre un ultimo numero commemorativo, rievocando tre storie incredibili e stravaganti.',
+                horoscope: 'Sarete coinvolti come osservatori esterni in una dinamica interpersonale. Smettete di voler essere i protagonisti e limitatevi ad ascoltare. Sul lavoro, un incarico che sembrava noioso si rivelerà pieno di dettagli. Un vostro consiglio neutro risolverà improvvisamente una crisi altrui.',
+                theme: { main: '#F2E5A2', accent: '#8CA3A3' },
+                img: 'https://m.media-amazon.com/images/M/MV5BMTU1YmNkZWYtYmExNC00YWE1LTk2NWEtMTQ2ODhmYTA5MmZiXkEyXkFqcGc@._V1_.jpg'
+            },
+            {
+                sign: 'Cancro',
+                movie: 'Rushmore',
+                year: '1998',
+                genre: 'Commedia/Drammatico',
+                plot: 'Un liceale brillante nelle attività extrascolastiche ma pessimo nello studio si infatua di una giovane insegnante, entrando in una feroce e infantile competizione con un ricco e depresso uomo d\'affari.',
+                horoscope: 'L\'ostinazione nel voler eccellere in ambiti che non vi competono vi sta esaurendo. State investendo troppa energia per attirare l\'attenzione di qualcuno che è distratto dai propri problemi. Riducete gli impegni, disdite il superfluo e imparate ad accettare che fare un passo indietro è segno di maturità, non di fallimento.',
+                theme: { main: '#D9B3B3', accent: '#2C3E50' },
+                img: 'https://i.etsystatic.com/5148979/r/il/011c75/250113568/il_570xN.250113568.jpg'
+            },
+            {
+                sign: 'Leone',
+                movie: 'L\'isola dei cani',
+                year: '2018',
+                genre: 'Animazione/Sci-Fi',
+                plot: 'In seguito a un\'epidemia, un autoritario sindaco esilia tutti i cani su un\'isola-discarica. Un coraggioso dodicenne vi si reca da solo per ritrovare il suo animale domestico perduto.',
+                horoscope: 'Vi sentirete momentaneamente isolati dal vostro gruppo a causa di un fraintendimento o di una voce infondata. Invece di cercare approvazione immediata, usate questo tempo per fare ordine tra le vostre priorità. Le alleanze più solide si formeranno con persone silenziose e pragmatiche, che solitamente tendete a ignorare.',
+                theme: { main: '#D1D1D1', accent: '#CC4747' },
+                img: 'https://i.ebayimg.com/images/g/by0AAOSwlPld5xyW/s-l400.jpg'
+            },
+            {
+                sign: 'Vergine',
+                movie: 'Asteroid City',
+                year: '2023',
+                genre: 'Commedia/Sci-Fi',
+                plot: 'Durante un convegno di giovani astronomi nel mezzo di una desolata città desertica, un evento inspiegabile costringe il governo a imporre una quarantena ferrea, bloccando tutti in uno stallo surreale.',
+                horoscope: 'Un evento del tutto fuori dal vostro controllo interromperà bruscamente una pianificazione a cui tenevate molto, costringendovi a una pausa forzata. Affrontate l\'imprevisto senza cercare significati profondi dove non ce ne sono. Una conversazione inaspettata vi darà l\'intuizione necessaria per superare questo blocco emotivo.',
+                theme: { main: '#F4D1B6', accent: '#6BBEB9' },
+                img: 'https://m.media-amazon.com/images/I/61fyOxnYzHL._AC_UF894,1000_QL80_.jpg'
+            },
+            {
+                sign: 'Bilancia',
+                movie: 'Il treno per il Darjeeling',
+                year: '2007',
+                genre: 'Commedia/Drammatico',
+                plot: 'Tre fratelli che hanno interrotto i rapporti tentano di ricongiungersi affrontando un viaggio in treno in India, che si trasforma rapidamente in una disastrosa serie di incidenti e liti.',
+                horoscope: 'Il tentativo di forzare una riconciliazione o di creare a tutti i costi un\'atmosfera armoniosa produrrà solo maggiore attrito. Vi state portando dietro troppe aspettative e vecchi rancori. Accettate e smettete di cercare di controllare l\'umore di chi vi sta accanto. I contrattempi saranno più istruttivi della destinazione.',
+                theme: { main: '#F9E0A8', accent: '#4B8BBE' },
+                img: 'https://pad.mymovies.it/filmclub/2007/07/085/locandina.jpg'
+            },
+            {
+                sign: 'Scorpione',
+                movie: 'Un colpo da dilettanti',
+                year: '1996',
+                genre: 'Commedia/Crime',
+                plot: 'Tre amici profondamente inetti e disorganizzati escogitano un piano criminale inutilmente complicato per compiere delle rapine, ritrovandosi puntualmente sopraffatti dalla loro stessa goffaggine.',
+                horoscope: 'Vi state imbrigliando in una strategia complessa per risolvere un problema pratico che richiederebbe solo semplice buonsenso. L\'eccesso di analisi vi porterà a commettere errori ingenui. Fidatevi di chi vi consiglia cautela e rimandate le decisioni drastiche. Il vostro attuale piano ha troppe falle evidenti.',
+                theme: { main: '#FDE15B', accent: '#315A8D' },
+                img: 'https://www.filmamo.it/assets/public/img/movies/it/13685.webp'
+            },
+            {
+                sign: 'Sagittario',
+                movie: 'La meravigliosa storia di Henry Sugar',
+                year: '2023',
+                genre: 'Cortometraggio/Commedia',
+                plot: 'Un facoltoso e cinico scommettitore scopre gli appunti su un uomo capace di vedere a occhi chiusi e decide di allenarsi per anni al solo scopo di sbancare i casinò.',
+                horoscope: 'Scoprirete di avere un vantaggio unico in una situazione competitiva. Ma la vittoria facile non vi si addice. Abbandonate la ricerca di un successo immediato e dedicatevi a un\'attività solitaria. La vera rivelazione arriverà dalla disciplina costante, non dal risultato finale.',
+                theme: { main: '#CBE8D9', accent: '#88B2CC' },
+                img: 'https://image.tmdb.org/t/p/original/oXoE9J0wfcUq1LNWwRg9gQoQRB8.jpg'
+            }
+        ];
+
+        // Riferimenti DOM aggiornati
+        const DOM = {
+            phase1: document.getElementById('phase-1'),
+            phase3Wrapper: document.getElementById('phase-3-wrapper'),
+            phase3Scroll: document.getElementById('phase-3-scroll'),
+            postersContainer: document.getElementById('posters-container'),
+            btnStart: document.getElementById('btn-start'),
+            btnLeft: document.getElementById('btn-scroll-left'),
+            btnRight: document.getElementById('btn-scroll-right'),
+            barTop: document.getElementById('cinema-bar-top'),
+            barBottom: document.getElementById('cinema-bar-bottom'),
+            filmGrain: document.getElementById('film-grain'),
+            modalOverlay: document.getElementById('modal-overlay'),
+            modalContent: document.getElementById('modal-content'),
+            btnCloseModal: document.getElementById('btn-close-modal'),
+            mArticle: document.getElementById('modal-article'),
+            mAside: document.getElementById('modal-aside'),
+            mSign: document.getElementById('modal-sign'),
+            mHoroscope: document.getElementById('modal-horoscope'),
+            mTitle: document.getElementById('modal-movie-title'),
+            mYear: document.getElementById('modal-movie-year'),
+            mGenre: document.getElementById('modal-movie-genre'),
+            mPlot: document.getElementById('modal-movie-plot')
+        };
+
+        let isAnimating = false;
+
+        /**
+         * Generazione dei nodi DOM: locandine affisse al muro
+         */
+        function initPosters() {
+            const htmlFragments = zoodiacData.map((data, index) => `
+                <!-- Modificate le classi w-[80vw] lg:w-[28vw] per mostrare esattamente 3 locandine su schermi larghi -->
+                <div class="relative snap-center shrink-0 flex flex-col items-center justify-center group cursor-pointer w-[80vw] md:w-[42vw] lg:w-[28vw] max-w-[340px]" data-index="${index}">
+                    
+                    <!-- Telaio della Locandina -->
+                    <article class="poster-card relative w-full h-[450px] md:h-[480px] border-[6px] border-amber-earth-950 p-4 flex flex-col items-center justify-between group-hover:-translate-y-2 group-hover:rotate-1 transition-all duration-500 shadow-[10px_15px_30px_rgba(0,0,0,0.4)] bg-cover z-10" style="background-color: ${data.theme.main}">
+                        
+                        <div class="w-full text-center border-b-2 border-amber-earth-950 pb-2 mb-4 bg-vanilla-custard-50/50 backdrop-blur-sm">
+                            <h3 class="uppercase tracking-[0.2em] font-bold text-lg lg:text-xl text-amber-earth-950">${data.sign}</h3>
+                        </div>
+
+                        <!-- IMMAGINE LOCANDINA -->
+                        <div class="w-full flex-grow border-2 border-amber-earth-950 flex items-center justify-center overflow-hidden relative transition-all duration-500 group-hover:brightness-110 shadow-inner" style="background-color: ${data.theme.accent}">
+                            
+                            <!-- Immagine adattata e portata in primo piano -->
+                            <img src="${data.img}" alt="Locandina di ${data.movie}" class="w-full h-full object-cover absolute inset-0 z-10" onerror="this.style.opacity='0'" />
+                            
+                            <div class="text-center p-4 z-0">
+                                <span class="text-[10px] uppercase tracking-widest block mb-2 opacity-80 text-vanilla-custard-50">Pellicola Associata</span>
+                                <span class="font-bold uppercase tracking-wider text-sm leading-tight inline-block text-vanilla-custard-50 mix-blend-difference">${data.movie}</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full text-center mt-4 bg-vanilla-custard-50/50 backdrop-blur-sm py-2">
+                            <button class="text-[10px] uppercase tracking-widest font-bold border-b border-amber-earth-950 text-amber-earth-950 transition-opacity opacity-80 group-hover:opacity-100">
+                                Leggi Presagio
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            `);
+            DOM.postersContainer.innerHTML = htmlFragments.join('');
+        }
+
+        /**
+         * Transizione Cinematografica (Fase 1 -> Fase 3)
+         */
+        function startExperience() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // Suono del Ciak all'inizio della transizione
+            ciakSound.volume = 0.6;
+            ciakSound.play().catch(e => console.log("Impossibile riprodurre l'audio automaticamente", e));
+
+            DOM.phase1.classList.remove('opacity-100');
+            DOM.phase1.classList.add('opacity-0', 'pointer-events-none');
+            DOM.phase1.setAttribute('aria-hidden', 'true');
+
+            setTimeout(() => {
+                DOM.barTop.classList.remove('-translate-y-full');
+                DOM.barBottom.classList.remove('translate-y-full');
+
+                DOM.filmGrain.classList.remove('opacity-0');
+                DOM.filmGrain.classList.add('opacity-20');
+
+                setTimeout(() => {
+                    DOM.filmGrain.classList.remove('opacity-20');
+                    DOM.filmGrain.classList.add('opacity-0');
+                }, 150);
+
+            }, 400);
+
+            setTimeout(() => {
+                DOM.phase3Wrapper.classList.remove('opacity-0');
+                DOM.phase3Wrapper.classList.remove('z-0');
+                DOM.phase3Wrapper.classList.add('z-20');
+
+                DOM.barTop.classList.add('-translate-y-full');
+                DOM.barBottom.classList.add('translate-y-full');
+
+                // Mostra frecce di navigazione
+                DOM.btnLeft.classList.remove('hidden');
+                DOM.btnRight.classList.remove('hidden');
+
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 800);
+
+            }, 1400);
+        }
+
+        /**
+         * Logica dello scroll della galleria tramite le frecce
+         */
+        function handleScrollArrows(direction) {
+            const firstItem = DOM.postersContainer.firstElementChild;
+            if (!firstItem) return;
+
+            const itemWidth = firstItem.offsetWidth;
+            const gap = parseFloat(window.getComputedStyle(DOM.postersContainer).gap) || 0;
+
+            // Calcola quanti elementi sono mostrati contemporaneamente a seconda dello schermo
+            const visibleItems = window.innerWidth >= 1024 ? 3 : (window.innerWidth >= 768 ? 2 : 1);
+
+            // Scorre del totale calcolato in modo che entrino sempre 3 locandine intere
+            const scrollAmount = (itemWidth + gap) * visibleItems;
+
+            DOM.phase3Scroll.scrollBy({
+                left: direction === 'right' ? scrollAmount : -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        /**
+         * Gestione Modale (Fase 4)
+         */
+        function openModal(index) {
+            if (isAnimating) return;
+            const data = zoodiacData[index];
+            if (!data) return;
+
+            DOM.mSign.textContent = data.sign;
+            DOM.mHoroscope.textContent = data.horoscope;
+            DOM.mTitle.textContent = data.movie;
+            DOM.mYear.textContent = data.year;
+            DOM.mGenre.textContent = data.genre;
+            DOM.mPlot.textContent = data.plot;
+
+            DOM.mArticle.style.backgroundColor = data.theme.main;
+            DOM.mAside.style.backgroundColor = data.theme.accent;
+
+            DOM.modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            DOM.modalOverlay.classList.add('opacity-100', 'pointer-events-auto');
+
+            setTimeout(() => {
+                DOM.modalContent.classList.remove('scale-95');
+                DOM.modalContent.classList.add('scale-100');
+            }, 50);
+        }
+
+        function closeModal() {
+            DOM.modalContent.classList.remove('scale-100');
+            DOM.modalContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                DOM.modalOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                DOM.modalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            }, 200);
+        }
+
+        function bindEvents() {
+            DOM.btnStart.addEventListener('click', startExperience);
+
+            // Click sulle frecce laterali
+            DOM.btnRight.addEventListener('click', () => handleScrollArrows('right'));
+            DOM.btnLeft.addEventListener('click', () => handleScrollArrows('left'));
+
+            // Click sulle locandine
+            DOM.phase3Scroll.addEventListener('click', (e) => {
+                const wrapper = e.target.closest('[data-index]');
+                if (wrapper) {
+                    const idx = wrapper.getAttribute('data-index');
+                    openModal(idx);
+                }
+            });
+
+            DOM.btnCloseModal.addEventListener('click', closeModal);
+
+            DOM.modalOverlay.addEventListener('click', (e) => {
+                if (e.target === DOM.modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !DOM.modalOverlay.classList.contains('opacity-0')) {
+                    closeModal();
+                } else if (e.key === 'ArrowRight' && DOM.modalOverlay.classList.contains('opacity-0') && !DOM.phase3Wrapper.classList.contains('opacity-0')) {
+                    handleScrollArrows('right');
+                } else if (e.key === 'ArrowLeft' && DOM.modalOverlay.classList.contains('opacity-0') && !DOM.phase3Wrapper.classList.contains('opacity-0')) {
+                    handleScrollArrows('left');
+                }
+            });
+        }
+
+        // Boot
+        initPosters();
+        bindEvents();
+
+    </script>
+</body>
+
+</html>
