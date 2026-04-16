@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Oracolo di Dino - Dark Fantasy Experience</title>
+    
+    <!-- Google Fonts: Cinzel (Titoli Gotici), Cormorant Garamond (Testi Fantasy altissima leggibilità) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        epic: ['Cinzel', 'serif'],
+                        lore: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        mystic: {
+                            gold: '#d4af37',
+                            goldDim: '#8b7326',
+                            void: '#030405',
+                            panel: '#0a0c10',
+                            text: '#f3f4f6',      
+                            textDim: '#d1d5db'    
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ========================================================
+           EFFETTI TESTO E MATERIALI (OTTIMIZZATI PER LEGGIBILITÀ)
+           ======================================================== */
+        
+        /* Testo Forgiato Base (Effetto 3D pulito e luminoso) */
+        .text-forged {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.6);
+            filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.9)) drop-shadow(0px 1px 1px rgba(255, 255, 255, 0.4));
+        }
+
+        /* Testo Metallo Inciso (Più chiaro e contrastato) */
+        .text-engraved-metal {
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 45%, #64748b 80%, #3f2e1f 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0px -1px 2px rgba(0, 0, 0, 0.8)) drop-shadow(0px 1px 1px rgba(255, 255, 255, 0.4));
+        }
+
+        /* Stile Pergamena Oscura (Missione Fantasy) */
+        .dark-parchment {
+            background-color: #0f0d0b;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"), 
+                radial-gradient(ellipse at 50% 50%, #171411 0%, #0a0807 80%, #000000 100%),
+                radial-gradient(circle at 0% 0%, rgba(0,0,0,0.9) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(0,0,0,0.9) 0%, transparent 40%);
+            box-shadow: 
+                inset 0 0 100px rgba(0,0,0,1),   
+                inset 0 0 20px rgba(0,0,0,0.9);  
+            border: 1px solid #2a221a; 
+        }
+
+        /* Stile Incastonatura Interna Pergamena */
+        .parchment-inner {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Controlli Audio (Slider Personalizzato Dark Fantasy) */
+        input[type=range].audio-slider {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range].audio-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            background: #1f1a14;
+            border: 1px solid #3f2e1f;
+            border-radius: 2px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+        }
+        input[type=range].audio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 8px;
+            background: linear-gradient(180deg, #fdf3c7 0%, #d4af37 50%, #8b7326 100%);
+            border: 1px solid #3f2e1f;
+            border-radius: 2px;
+            margin-top: -6px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+        input[type=range].audio-slider:focus { outline: none; }
+
+        /* Scrollbar Fantasy */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030405; border-left: 1px solid #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8b7326; }
+    </style>
+</head>
+<body class="text-mystic-text font-lore min-h-screen flex flex-col overflow-hidden selection:bg-[#450a0a] selection:text-white bg-mystic-void tracking-wide text-lg">
+
+    <!-- SFONDI DINAMICI -->
+    <!-- Sfondo Castello Notturno (Schermata 1 e 2) -->
+    <div id="bg-intro" class="fixed inset-0 z-0 bg-[url('https://img.freepik.com/free-photo/view-castle-night-with-scary-atmosphere_23-2150844281.jpg?semt=ais_hybrid&w=740&q=80')] bg-cover bg-center transition-opacity duration-700 opacity-100"></div>
+    
+    <!-- Sfondo Lettura Oracolo (Schermata 3) -->
+    <div id="bg-reading" class="fixed inset-0 z-0 bg-[url('https://images3.alphacoders.com/134/thumb-1920-1346952.png')] bg-cover bg-top transition-opacity duration-700 opacity-0"></div>
+    
+    <!-- Overlay scuro per garantire sempre la massima leggibilità -->
+    <div class="fixed inset-0 z-0 bg-[#050608]/80 pointer-events-none transition-colors duration-700" id="global-overlay"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main id="app" class="relative z-10 w-full h-screen overflow-hidden flex flex-col items-center">
+
+        <!-- Controlli Audio: Mute + Slider Volume -->
+        <div id="audio-controls" class="fixed top-4 right-4 sm:top-6 sm:right-8 z-50 flex items-center gap-3 bg-[#0a0c10]/95 backdrop-blur-md border border-[#8b7326]/50 rounded-full px-4 py-2 shadow-[0_5px_15px_rgba(0,0,0,0.9)] opacity-0 pointer-events-none transition-opacity duration-700">
+            <button id="btn-mute" class="group relative hover:scale-110 active:scale-95 transition-all outline-none flex items-center justify-center">
+                <svg id="icon-unmute" class="w-5 h-5 text-[#d4af37] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5 10.5a2.5 2.5 0 00-2.5 2.5v0a2.5 2.5 0 002.5 2.5h3l5 5V3.5l-5 5H5z"></path>
+                </svg>
+                <svg id="icon-mute" class="w-5 h-5 text-[#8b7326] group-hover:text-white transition-colors hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                </svg>
+            </button>
+            <div class="h-4 w-[1px] bg-[#3f2e1f]"></div>
+            <input type="range" id="volume-slider" min="0" max="0.25" step="0.01" value="0.12" class="audio-slider w-16 sm:w-24" title="Volume Suono">
+        </div>
+
+        <!-- ==========================================
+             SCREEN 1: TITLE SCREEN 
+             ========================================== -->
+        <section id="screen-intro" class="absolute inset-0 w-full h-full overflow-y-auto transition-opacity duration-700 ease-in-out opacity-100 flex flex-col items-center justify-center p-6 text-center z-20">
+            
+            <h1 class="font-epic text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-[0.1em] leading-tight mb-10 text-engraved-metal px-4">
+                <span class="block mb-2 text-[0.6em] tracking-[0.2em] text-[#d1d5db]">L'Oroscopo Settimanale</span>
+                <span class="block text-[1.2em]">Di Dino</span>
+            </h1>
+            
+            <p class="text-xl sm:text-2xl text-mystic-textDim max-w-3xl mx-auto leading-relaxed mb-16 font-medium px-4 drop-shadow-md">
+                Le costellazioni sono solo cenere fredda. Interroga il Grimorio, scopri quale Ombra infesta il tuo cammino e svela il tuo destino.
+            </p>
+            
+            <button id="btn-start" class="group relative px-12 py-5 font-epic font-bold text-xl uppercase tracking-[0.2em] outline-none hover:scale-105 active:scale-95 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#64748b] via-[#334155] to-[#292524] rounded shadow-[0_10px_20px_rgba(0,0,0,0.8)] p-[2px]">
+                    <div class="w-full h-full bg-[#0a0c10] rounded-sm flex items-center justify-center group-hover:bg-[#1a1c22] transition-colors"></div>
+                </div>
+                <span class="relative z-10 text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8]">
+                    Apri il Grimorio
+                </span>
+            </button>
+        </section>
+
+
+        <!-- ==========================================
+             SCREEN 2: INTERACTIVE CAROUSEL (GRIMORIO)
+             ========================================== -->
+        <section id="screen-level" class="absolute inset-0 w-full h-full flex flex-col transition-all duration-700 ease-in-out opacity-0 pointer-events-none translate-y-8 z-20 hidden">
+            
+            <div class="w-full text-center pt-16 pb-4 px-4 flex-shrink-0">
+                <h2 class="font-epic text-4xl sm:text-6xl font-black uppercase tracking-[0.15em] mb-4 text-engraved-metal">
+                    Scegli la tua Ombra
+                </h2>
+                <div class="w-48 mx-auto h-1 bg-gradient-to-r from-transparent via-[#4b5563] to-transparent mt-6 mb-2"></div>
+            </div>
+
+            <!-- Contenitore Carosello -->
+            <div class="w-full flex-grow relative flex items-center justify-center">
+                
+                <button id="btn-scroll-left" class="absolute left-2 sm:left-8 z-30 p-1 bg-gradient-to-b from-[#64748b] to-[#292524] rounded-full shadow-2xl hover:scale-110 transition-transform active:scale-95">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-[#0a0c10] rounded-full flex items-center justify-center hover:bg-[#1a1c22] transition-colors">
+                        <span class="text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8] font-epic text-3xl leading-none pb-1">&larr;</span>
+                    </div>
+                </button>
+
+                <div id="boss-carousel" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory items-center gap-10 px-[15vw] sm:px-[35vw] pb-12 pt-8 scroll-smooth [&::-webkit-scrollbar]:hidden">
+                    <!-- Le carte con semitrasparenza vengono iniettate via JS -->
+                </div>
+
+                <button id="btn-scroll-right" class="absolute right-2 sm:right-8 z-30 p-1 bg-gradient-to-b from-[#64748b] to-[#292524] rounded-full shadow-2xl hover:scale-110 transition-transform active:scale-95">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-[#0a0c10] rounded-full flex items-center justify-center hover:bg-[#1a1c22] transition-colors">
+                        <span class="text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8] font-epic text-3xl leading-none pb-1">&rarr;</span>
+                    </div>
+                </button>
+
+            </div>
+            
+        </section>
+
+
+        <!-- ==========================================
+             SCREEN 3: THE ORACLE READING (PERGAMENA)
+             ========================================== -->
+        <section id="screen-reading" class="absolute inset-0 w-full h-full overflow-y-auto transition-all duration-700 ease-in-out opacity-0 pointer-events-none scale-95 z-30 hidden">
+            <div class="min-h-full flex flex-col items-center justify-start p-2 sm:p-8 md:p-12">
+                
+                <!-- Navbar di ritorno -->
+                <div class="w-full max-w-5xl flex justify-start mb-8 mt-4 sticky top-4 z-50 px-2 sm:px-0">
+                    <button id="btn-back" class="group flex items-center p-[2px] bg-gradient-to-b from-slate-600 to-slate-900 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-transform">
+                        <div class="flex items-center gap-4 px-6 py-3 bg-[#0a0c10] rounded-full group-hover:bg-[#11131a] transition-colors border border-[#222]">
+                            <span class="text-2xl text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8] font-epic font-bold transition-transform group-hover:-translate-x-1 leading-none">&larr;</span> 
+                            <span class="font-epic font-bold uppercase tracking-widest text-sm sm:text-base text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8] pt-1">Ripiega Pergamena</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- STRUTTURA PERGAMENA OSCURA REALISTICA -->
+                <div class="w-full max-w-5xl p-[2px] bg-gradient-to-b from-[#4b5563] via-[#292524] to-transparent shadow-[0_50px_100px_rgba(0,0,0,1)] transition-all duration-700 mb-16 rounded-sm relative" id="reading-outer-border">
+                    <div id="reading-card" class="w-full h-full dark-parchment p-8 sm:p-14 md:p-24 relative overflow-hidden flex flex-col rounded-sm">
+                        
+                        <!-- Glow Interno Magico (Colore dipendente dal Boss) -->
+                        <div id="reading-glow" class="absolute inset-0 bg-gradient-to-b opacity-15 pointer-events-none transition-colors duration-700 mix-blend-screen"></div>
+
+                        <!-- Intestazione (Nomi) -->
+                        <div class="flex flex-col items-center text-center mt-4 mb-16 relative z-10">
+                            
+                            <div class="flex items-center justify-center gap-6 mb-6 opacity-90 w-full">
+                                <div class="h-[2px] flex-grow max-w-[100px] bg-gradient-to-r from-transparent to-[#64748b]"></div>
+                                <div id="read-sign" class="font-epic text-xl sm:text-2xl font-black tracking-[0.4em] uppercase transition-colors duration-700 text-forged bg-gradient-to-b">
+                                    Segno
+                                </div>
+                                <div class="h-[2px] flex-grow max-w-[100px] bg-gradient-to-l from-transparent to-[#64748b]"></div>
+                            </div>
+                            
+                            <h3 id="read-boss" class="font-epic text-4xl sm:text-5xl md:text-6xl font-black tracking-[0.05em] leading-tight uppercase mt-2 text-forged bg-gradient-to-b from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] px-4">
+                                Nome Boss
+                            </h3>
+                        </div>
+
+                        <!-- Vasi Comunicanti (Barre della Vita Incastonate sulla pergamena) -->
+                        <div class="flex flex-col md:flex-row gap-10 md:gap-16 mb-20 relative z-10">
+                            
+                            <div class="flex-1">
+                                <div class="flex justify-between font-epic text-base sm:text-lg font-bold uppercase tracking-[0.2em] mb-4">
+                                    <span class="text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8]">Tua Resilienza</span>
+                                    <span id="player-hp-txt" class="text-forged bg-gradient-to-b from-[#ffffff] to-[#94a3b8]">100%</span>
+                                </div>
+                                <div class="w-full h-3 p-[1px] bg-[#050403] border border-[#2a221a] rounded shadow-[inset_0_2px_5px_rgba(0,0,0,1)]">
+                                    <div class="w-full h-full rounded-sm overflow-hidden relative">
+                                        <div id="player-hp-bar" class="h-full bg-gradient-to-r from-mystic-goldDim to-mystic-gold w-[0%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex-1">
+                                <div class="flex justify-between font-epic text-base sm:text-lg font-bold uppercase tracking-[0.2em] mb-4">
+                                    <span class="text-forged bg-gradient-to-b from-[#e2e8f0] to-[#64748b]">Forza dell'Ombra</span>
+                                    <span id="boss-hp-txt" class="text-forged bg-gradient-to-b from-[#e2e8f0] to-[#64748b]">100%</span>
+                                </div>
+                                <div class="w-full h-3 p-[1px] bg-[#050403] border border-[#2a221a] rounded shadow-[inset_0_2px_5px_rgba(0,0,0,1)]">
+                                    <div class="w-full h-full rounded-sm overflow-hidden relative">
+                                        <div id="boss-hp-bar" class="h-full bg-gradient-to-r from-[#1a1a1a] to-[#4a4a4a] w-[0%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fregio Divisorio -->
+                        <div class="w-full flex justify-center mb-12 opacity-50 text-[#64748b] relative z-10">
+                            <svg width="200" height="20" viewBox="0 0 200 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M0 10 Q 50 0, 100 10 T 200 10" />
+                                <circle cx="100" cy="10" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+
+                        <!-- TESTI SULLA PERGAMENA -->
+                        <div class="space-y-12 relative z-10 flex-grow">
+                            
+                            <!-- Lore -->
+                            <div class="bg-[#050403]/40 border-y border-[#2a221a] py-8 px-4 sm:px-10 rounded-lg shadow-[inset_0_0_30px_rgba(0,0,0,0.5)]">
+                                <h4 class="font-epic text-lg sm:text-xl font-bold tracking-[0.2em] uppercase mb-6 flex items-center justify-center gap-4 text-center">
+                                    <span class="w-2 h-2 rotate-45 bg-gradient-to-b from-[#ffffff] to-[#94a3b8]"></span>
+                                    <span class="text-forged bg-gradient-to-b from-[#ffffff] via-[#cbd5e1] to-[#64748b]">Memorie del Nemico</span>
+                                    <span class="w-2 h-2 rotate-45 bg-gradient-to-b from-[#ffffff] to-[#94a3b8]"></span>
+                                </h4>
+                                <p id="read-lore" class="text-xl sm:text-2xl text-[#f8fafc] leading-relaxed tracking-wide text-center max-w-4xl mx-auto drop-shadow-md">
+                                    Lore del boss...
+                                </p>
+                            </div>
+
+                            <!-- Fregio Divisorio Ornato -->
+                            <div class="w-full flex justify-center opacity-40 text-[#64748b] py-2">
+                                <svg width="250" height="20" viewBox="0 0 250 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M0 10 Q 62.5 0, 125 10 T 250 10" />
+                                    <path d="M75 10 L 175 10" />
+                                    <circle cx="125" cy="10" r="3" fill="currentColor"/>
+                                </svg>
+                            </div>
+
+                            <!-- Armamento e Power Up -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 text-center">
+                                <!-- Arma -->
+                                <div class="bg-[#050403]/70 border border-[#2a221a] rounded-lg p-8 sm:p-10 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] relative">
+                                    <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#64748b]/50 rounded-tl-sm"></div>
+                                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#64748b]/50 rounded-br-sm"></div>
+                                    
+                                    <div class="font-epic text-sm sm:text-base font-bold tracking-[0.2em] uppercase mb-4 opacity-90 text-forged bg-gradient-to-b from-[#f1f5f9] to-[#9ca3af]">Strumento Offensivo</div>
+                                    <div id="read-weapon" class="font-epic text-2xl sm:text-3xl font-black text-forged bg-gradient-to-b from-white to-[#cbd5e1] mb-6 uppercase">Nome Arma</div>
+                                    <p id="read-weapon-desc" class="text-lg sm:text-xl text-[#f1f5f9] leading-relaxed tracking-wide">
+                                        Descrizione dell'arma.
+                                    </p>
+                                </div>
+                                <!-- Power Up -->
+                                <div class="bg-[#050403]/70 border border-[#2a221a] rounded-lg p-8 sm:p-10 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] relative">
+                                    <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#64748b]/50 rounded-tl-sm"></div>
+                                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#64748b]/50 rounded-br-sm"></div>
+
+                                    <div class="font-epic text-sm sm:text-base font-bold tracking-[0.2em] uppercase mb-4 opacity-90 text-forged bg-gradient-to-b from-[#f1f5f9] to-[#9ca3af]">Dono Astrale</div>
+                                    <div id="read-powerup" class="font-epic text-2xl sm:text-3xl font-black text-forged transition-colors duration-700 mb-6 uppercase">Nome Potenziamento</div>
+                                    <p id="read-powerup-desc" class="text-lg sm:text-xl text-[#f1f5f9] leading-relaxed tracking-wide">
+                                        Descrizione del potenziamento.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Fregio Divisorio -->
+                            <div class="w-full flex justify-center mt-8 mb-2 opacity-40 text-[#64748b]">
+                                <svg width="250" height="20" viewBox="0 0 250 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M0 10 Q 62.5 20, 125 10 T 250 10" />
+                                    <path d="M75 10 L 175 10" />
+                                    <circle cx="125" cy="10" r="3" fill="currentColor"/>
+                                </svg>
+                            </div>
+
+                            <!-- Oroscopo Finale (Sigillo) -->
+                            <div class="mt-4" id="read-outcome-outer">
+                                <div class="relative overflow-hidden py-10 px-6 sm:px-12 bg-gradient-to-b from-transparent via-[#050403] to-transparent border-y border-[#1a1510]">
+                                    <h4 class="font-epic text-xl sm:text-2xl font-bold tracking-[0.2em] uppercase mb-8 text-center text-forged bg-gradient-to-b from-[#e2e8f0] to-[#94a3b8]">
+                                        Profezia Settimanale
+                                    </h4>
+                                    <p id="read-outcome" class="text-2xl sm:text-3xl text-white leading-relaxed text-center max-w-4xl mx-auto relative z-10 tracking-wide font-medium drop-shadow-lg">
+                                        L'esito della settimana...
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JS Logic -->
+    <script>
+        // ==========================================
+        // DATABASE COMPLETO
+        // ==========================================
+        const gameData = [
+            {
+                signName: "Ariete", bossName: "Labirinto del Sovrappensiero", 
+                playerHp: 50, bossHp: 60,
+                lore: "Un costrutto geometrico che si espande all'infinito. Trasforma un semplice messaggio in una condanna a morte, intrappolandoti in un labirinto di supposizioni.",
+                weapon: "Lama della Semplicità", weaponDesc: "Un taglio netto e razionale che spezza i fili ingarbugliati dell'ansia immotivata.",
+                powerUp: "Respiro del Presente", powerUpDesc: "Azzera temporaneamente le proiezioni sul futuro, ancorandoti saldamente alla realtà.",
+                outcome: "STALLO. Smettila di leggere tra le righe dove non c'è bisogno. Questa settimana l'oroscopo ti consiglia di prendere le parole per quello che sono. Non c'è nessun complotto contro di te, solo la tua mente che tesse ragnatele nel vuoto.",
+                theme: {
+                    metalGradient: "from-[#ffb3b3] via-[#dc2626] to-[#450a0a]",
+                    borderGlow: "from-[#dc2626] via-[#450a0a]", glow: "from-red-900/30", bar: "from-[#dc2626] to-[#7f1d1d]"
+                }
+            },
+            {
+                signName: "Toro", bossName: "Architetto del Caos", 
+                playerHp: 25, bossHp: 85,
+                lore: "Un cumulo putrescente di oggetti fuori posto, incombenze minori e disordine. Si nutre del tuo 'lo metto a posto dopo', logorando lentamente il tuo status mentale.",
+                weapon: "Fendente della Cernita", weaponDesc: "Un attacco brutale e organizzato che divide ciò che è essenziale da ciò che è puro fardello.",
+                powerUp: "Cecità Selettiva", powerUpDesc: "Ti permette di ignorare il disordine marginale per preservare le tue energie.",
+                outcome: "SOPRAVVIVENZA. Il disordine esterno riflette il tuo caos interiore, ma non devi risolvere tutto in un giorno. Questa settimana accetta che la tua vita non sia perfetta. Sistema una cosa sola, e perdona te stesso per il resto.",
+                theme: {
+                    metalGradient: "from-[#e2e8f0] via-[#64748b] to-[#1e293b]",
+                    borderGlow: "from-[#64748b] via-[#1e293b]", glow: "from-slate-500/30", bar: "from-[#94a3b8] to-[#475569]"
+                }
+            },
+            {
+                signName: "Gemelli", bossName: "Leviatano della Stanchezza", 
+                playerHp: 15, bossHp: 90,
+                lore: "Una bestia titanica che ti schiaccia sotto la sua mole letargica. Trasforma ogni piccolo compito in un'impresa erculea, drenando la tua stamina solo guardandoti.",
+                weapon: "Scudo della Delega", weaponDesc: "Arma difensiva. Lascia cadere le tue responsabilità sulle spalle di chi dovrebbe realmente occuparsene.",
+                powerUp: "Letargo Riparatore", powerUpDesc: "Sospende il tempo e le comunicazioni esterne, permettendo al tuo corpo di curarsi.",
+                outcome: "SCONFITTA INEVITABILE. Hai perso in partenza. Questa settimana non hai l'energia per combattere, ed è inutile fingere il contrario. L'oracolo impone il riposo. Disdici gli impegni non essenziali e chiudi le comunicazioni.",
+                theme: {
+                    metalGradient: "from-[#c7d2fe] via-[#4f46e5] to-[#1e1b4b]",
+                    borderGlow: "from-[#4f46e5] via-[#1e1b4b]", glow: "from-indigo-600/30", bar: "from-[#6366f1] to-[#3730a3]"
+                }
+            },
+            {
+                signName: "Cancro", bossName: "Parassita della Comparazione", 
+                playerHp: 85, bossHp: 25,
+                lore: "Un occhio che proietta costantemente i successi irraggiungibili altrui. Si nutre del tuo senso di inadeguatezza e ti sussurra che sei rimasto indietro.",
+                weapon: "Estirpazione", weaponDesc: "Disconnessione. Distrugge temporaneamente la tua capacità di vedere le vite fittizie degli altri.",
+                powerUp: "Focus Interiore", powerUpDesc: "Canalizza la tua invidia trasformandola in energia creativa.",
+                outcome: "VITTORIA. Smetti di guardare la corsa degli altri e ricomincia a camminare col tuo passo. Questa settimana ignora le vetrine perfette altrui: capirai che la tua vita, per quanto incasinata, ha un valore inestimabile.",
+                theme: {
+                    metalGradient: "from-[#cffafe] via-[#0891b2] to-[#164e63]",
+                    borderGlow: "from-[#0891b2] via-[#164e63]", glow: "from-cyan-600/30", bar: "from-[#06b6d4] to-[#155e75]"
+                }
+            },
+            {
+                signName: "Leone", bossName: "Vuoto della Motivazione", 
+                playerHp: 60, bossHp: 50,
+                lore: "Una landa desolata e grigia dove nulla ha sapore, odore, suono o colore. Ti toglie la gioia per i tuoi vecchi hobby e trasforma le passioni in pesanti doveri insensati.",
+                weapon: "Scintilla dell'Inizio", weaponDesc: "Un innesco forzato. Avvia un'azione meccanica nella speranza che la passione segua l'inerzia.",
+                powerUp: "Disciplina Cieca", powerUpDesc: "Blocca i recettori emotivi, permettendoti di operare basandoti unicamente sul dovere.",
+                outcome: "VITTORIA TATTICA. L'ispirazione è morta, ma la disciplina vince. Non aspettare di 'avere voglia' di fare le cose questa settimana. Scoprirai che l'appetito e la passione tornano magicamente a metà dell'opera.",
+                theme: {
+                    metalGradient: "from-[#fef3c7] via-[#d97706] to-[#78350f]",
+                    borderGlow: "from-[#d97706] via-[#78350f]", glow: "from-amber-600/30", bar: "from-[#f59e0b] to-[#b45309]"
+                }
+            },
+            {
+                signName: "Vergine", bossName: "Ombra dell'Ira", 
+                playerHp: 10, bossHp: 95,
+                lore: "Un golem cavo, riempito di tutti i piccoli fastidi quotidiani che hai finto di ignorare sorridendo. È sul punto di esplodere per una risposta sgarbata.",
+                weapon: "Valvola di Sfogo", weaponDesc: "Un rilascio controllato di verità spiacevoli. Infonde danni da tossicità, ma preserva l'integrità del tuo spirito.",
+                powerUp: "Urlo Abissale", powerUpDesc: "Un fragore interiore che disperde la rabbia prima che possa ferire gli innocenti.",
+                outcome: "CADUTA LIBERA. Esploderai per il motivo sbagliato, con la persona sbagliata. La sconfitta ti insegna una cosa: smetti di ingoiare rospi in nome dell'educazione. Esprimi il disappunto subito, o questo demone tornerà a distruggere la tua pace.",
+                theme: {
+                    metalGradient: "from-[#d1fae5] via-[#059669] to-[#064e3b]",
+                    borderGlow: "from-[#059669] via-[#064e3b]", glow: "from-emerald-600/30", bar: "from-[#10b981] to-[#047857]"
+                }
+            },
+            {
+                signName: "Bilancia", bossName: "Divoratore di Scadenze", 
+                playerHp: 95, bossHp: 10,
+                lore: "Un mostro orologiaio. Rallenta il tempo quando ozi e lo accelera spaventosamente quando capisci che la data di consegna è l'alba di domani.",
+                weapon: "Fendente del Primo Passo", weaponDesc: "Una mossa d'apertura che rompe il sigillo della procrastinazione, dimezzando il potere del nemico.",
+                powerUp: "Bolla di Concentrazione", powerUpDesc: "Crea una distorsione temporale in cui le distrazioni collassano su se stesse.",
+                outcome: "VITTORIA ASSOLUTA. Sei riuscito a spezzare la maledizione. Invece di guardare la montagna di lavoro, hai mosso il primo sassolino. Questa settimana consegnerai tutto in tempo, liberandoti dal terrore dell'ultimo minuto. Respira l'aria pulita della serenità.",
+                theme: {
+                    metalGradient: "from-[#ccfbf1] via-[#0d9488] to-[#134e4a]",
+                    borderGlow: "from-[#0d9488] via-[#134e4a]", glow: "from-teal-600/30", bar: "from-[#14b8a6] to-[#0f766e]"
+                }
+            },
+            {
+                signName: "Scorpione", bossName: "Illusione del Controllo", 
+                playerHp: 70, bossHp: 45,
+                lore: "Un burattinaio spettrale che ti illude di poter gestire i sentimenti altrui e gli eventi. Genera un'ansia atroce quando i tuoi piani perfetti deragliano.",
+                weapon: "Resa Consapevole", weaponDesc: "Abbandoni il volante. Rinunci alla pianificazione ossessiva causando danni critici all'Ego del mostro.",
+                powerUp: "Adattamento Fluido", powerUpDesc: "Modella il tuo spirito come acqua, permettendoti di incassare gli imprevisti senza subire danni da stress.",
+                outcome: "DEMONE ESORCIZZATO. Accettare che non puoi controllare le reazioni degli altri ti donerà una pace incredibile questa settimana. Fai del tuo meglio, e lascia che l'universo sbrogli il resto.",
+                theme: {
+                    metalGradient: "from-[#ffe4e6] via-[#e11d48] to-[#881337]",
+                    borderGlow: "from-[#e11d48] via-[#881337]", glow: "from-rose-700/30", bar: "from-[#f43f5e] to-[#be123c]"
+                }
+            },
+            {
+                signName: "Sagittario", bossName: "Eco del Fallimento", 
+                playerHp: 90, bossHp: 20,
+                lore: "Un fantasma mutaforma che prende le sembianze delle tue peggiori insicurezze. Ti ripete che i tuoi successi sono solo fortuna e che presto tutti scopriranno l'inganno.",
+                weapon: "Martello dell'Evidenza", weaponDesc: "Un'arma forgiata dai fatti concreti e dai traguardi che hai oggettivamente raggiunto.",
+                powerUp: "Memoria del Trionfo", powerUpDesc: "Richiama alla mente un successo passato per generare invulnerabilità alle critiche interne.",
+                outcome: "TRIONFO. Il fantasma è stato smentito dai fatti. Questa settimana riceverai una conferma tangibile del tuo valore. Aggrappati a questa prova inconfutabile: ti sei sudato e meritato ogni singola cosa bella che hai ottenuto.",
+                theme: {
+                    metalGradient: "from-[#fae8ff] via-[#c026d3] to-[#701a75]",
+                    borderGlow: "from-[#c026d3] via-[#701a75]", glow: "from-fuchsia-700/30", bar: "from-[#d946ef] to-[#a21caf]"
+                }
+            },
+            {
+                signName: "Capricorno", bossName: "Palude della Nostalgia", 
+                playerHp: 45, bossHp: 65,
+                lore: "Un pantano caldo e vischioso. Ti avvolge con memorie idealizzate del passato, facendoti credere che 'prima era tutto migliore' e avvelenando il tuo presente.",
+                weapon: "Lancia del Presente", weaponDesc: "Trafigge l'illusione temporale, ancorandoti dolorosamente ma necessariamente all'oggi.",
+                powerUp: "Accettazione del Tempo", powerUpDesc: "Trasforma il rimpianto in malinconia, neutralizzando i danni del veleno.",
+                outcome: "PRIGIONIA TEMPORANEA. Sei incastrato nei ricordi, e va bene così. Certe malinconie non si possono respingere. Concediti questa settimana per piangere ricordi passati, ma preparati, presto dovrai uscire dal fango.",
+                theme: {
+                    metalGradient: "from-[#fef9c3] via-[#ca8a04] to-[#713f12]",
+                    borderGlow: "from-[#ca8a04] via-[#713f12]", glow: "from-yellow-600/30", bar: "from-[#eab308] to-[#a16207]"
+                }
+            },
+            {
+                signName: "Acquario", bossName: "Dovere Non Richiesto", 
+                playerHp: 85, bossHp: 15,
+                lore: "Un giogo di ferro incandescente. Ti convince che sei tu a dover risolvere i problemi emotivi e pratici di tutti quelli che ti circondano, anche quando non te lo chiedono.",
+                weapon: "Taglio delle Priorità", weaponDesc: "Un colpo freddo che recide i legami con i drammi altrui, restituendo i problemi ai legittimi proprietari.",
+                powerUp: "Scudo dell'Indifferenza", powerUpDesc: "Ti rende immune ai tentativi di manipolazione emotiva e al vittimismo.",
+                outcome: "VITTORIA SCHIACCIANTE. Hai tolto il mantello da salvatore. Questa settimana smetti di fare da terapista non retribuito e risolutore di problemi altrui. Usa tutta quell'energia su te stesso. La tua schiena (e la tua mente) ringrazieranno.",
+                theme: {
+                    metalGradient: "from-[#dbeafe] via-[#2563eb] to-[#1e3a8a]",
+                    borderGlow: "from-[#2563eb] via-[#1e3a8a]", glow: "from-blue-700/30", bar: "from-[#3b82f6] to-[#1d4ed8]"
+                }
+            },
+            {
+                signName: "Pesci", bossName: "Monolite dell'Insoddisfazione", 
+                playerHp: 25, bossHp: 80,
+                lore: "Una lastra di pietra grigia che appiattisce le tue emozioni. È la sensazione strisciante che ti manchi qualcosa di indefinito, anche quando tutto sembra andare bene.",
+                weapon: "Ricerca di Scopo", weaponDesc: "Una lama instabile. Tenta di colpire la noia cercando un significato in passioni dimenticate.",
+                powerUp: "Scintilla di Caos", powerUpDesc: "Infonde disordine volontario nella tua routine, scuotendo i sensi intorpiditi dall'abitudine.",
+                outcome: "RISVEGLIO SALVIFICO. Il vuoto che senti non si colmerà comprando qualcosa o uscendo senza meta. L'oracolo ti sprona a distruggere la routine: fai qualcosa che ti spaventa o ti mette a disagio questa settimana. Rompi il vetro per tornare a respirare.",
+                theme: {
+                    metalGradient: "from-[#f3e8ff] via-[#9333ea] to-[#581c87]",
+                    borderGlow: "from-[#9333ea] via-[#581c87]", glow: "from-purple-600/30", bar: "from-[#a855f7] to-[#7e22ce]"
+                }
+            }
+        ];
+
+        // Gestione DOM
+        const screens = {
+            intro: document.getElementById('screen-intro'),
+            level: document.getElementById('screen-level'),
+            reading: document.getElementById('screen-reading')
+        };
+        const backgrounds = {
+            intro: document.getElementById('bg-intro'),
+            reading: document.getElementById('bg-reading')
+        };
+        const overlay = document.getElementById('global-overlay');
+        
+        const ui = {
+            btnMute: document.getElementById('btn-mute'),
+            iconUnmute: document.getElementById('icon-unmute'),
+            iconMute: document.getElementById('icon-mute'),
+            volumeSlider: document.getElementById('volume-slider'),
+            carousel: document.getElementById('boss-carousel'),
+            btnScrollLeft: document.getElementById('btn-scroll-left'),
+            btnScrollRight: document.getElementById('btn-scroll-right'),
+            rOuterBorder: document.getElementById('reading-outer-border'),
+            rCard: document.getElementById('reading-card'),
+            rGlow: document.getElementById('reading-glow'),
+            rSign: document.getElementById('read-sign'),
+            rBoss: document.getElementById('read-boss'),
+            rLore: document.getElementById('read-lore'),
+            rWeapon: document.getElementById('read-weapon'),
+            rWeaponDesc: document.getElementById('read-weapon-desc'),
+            rPowerup: document.getElementById('read-powerup'),
+            rPowerupDesc: document.getElementById('read-powerup-desc'),
+            rOutcome: document.getElementById('read-outcome'),
+            rOutcomeOuter: document.getElementById('read-outcome-outer'),
+            pBar: document.getElementById('player-hp-bar'),
+            bBar: document.getElementById('boss-hp-bar'),
+            pTxt: document.getElementById('player-hp-txt'),
+            bTxt: document.getElementById('boss-hp-txt')
+        };
+
+        // ==========================================
+        // AUDIO ENGINE (16-bit Dark Fantasy Doom)
+        // ==========================================
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx, masterGain;
+        let isMuted = false;
+        let isPlaying = false;
+        let nextNoteTime = 0;
+        let currentStep = 0;
+        let timerID;
+
+        // Ritmo rallentato e oppressivo
+        const tempo = 0.22;
+
+        const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+        // Basso Molto Profondo (Ottava bassa)
+        const b1 = [26,0,0,0, 26,0,0,0, 26,0,0,0, 29,0,0,0]; 
+        const b2 = [26,0,0,0, 26,0,0,0, 33,0,0,0, 32,0,0,0]; 
+        const b3 = [26,26,0,26, 26,26,0,26, 26,26,0,26, 29,0,0,0]; 
+        const b4 = [26,26,0,26, 26,26,0,26, 33,0,0,0, 32,0,0,0];
+        const bassNotes = [...b1, ...b2, ...b3, ...b4]; // 64 steps
+
+        // Arpeggi Inquietanti
+        const a1 = [50,0,0,0, 53,0,0,0, 57,0,0,0, 53,0,0,0];
+        const a2 = [49,0,0,0, 52,0,0,0, 56,0,0,0, 52,0,0,0];
+        const arpB = [50,53,57,53, 50,53,57,53, 49,52,56,52, 49,52,56,52];
+        const arpNotes = [...a1, ...a2, ...arpB, ...arpB]; // 64 steps
+
+        // Melodia Lenta e Distorta
+        const m1 = [62,0,0,0, 65,0,0,0, 69,0,0,0, 68,0,0,0];
+        const m2 = [62,0,0,0, 65,0,0,0, 74,0,0,0, 73,0,0,0];
+        const m3 = [74,0,73,0, 69,0,65,0, 68,0,65,0, 62,0,0,0];
+        const melNotes = [...m1, ...m2, ...m1, ...m3]; // 64 steps
+
+        function playTone(freq, time, dur, type, vol) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(vol, time + 0.02);
+            gain.gain.setTargetAtTime(0, time + dur - 0.05, 0.05);
+            
+            osc.connect(gain);
+            gain.connect(masterGain);
+            
+            osc.start(time);
+            osc.stop(time + dur + 0.1);
+        }
+
+        function playNoise(time, vol, dur) {
+            if (!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * dur;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            // Filtro per rendere il rumore più oscuro (lo-fi snare/crash)
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 1000;
+            
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(vol, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+            
+            noise.start(time);
+        }
+
+        function playKick(time, vol) {
+            if (!audioCtx) return;
+            const dur = 0.2;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.frequency.setValueAtTime(100, time);
+            osc.frequency.exponentialRampToValueAtTime(10, time + dur);
+            
+            gain.gain.setValueAtTime(vol, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+            
+            osc.connect(gain);
+            gain.connect(masterGain);
+            
+            osc.start(time);
+            osc.stop(time + dur);
+        }
+
+        function scheduleNote(step, time) {
+            const bNote = bassNotes[step % 64];
+            if (bNote) playTone(midiToFreq(bNote), time, tempo * 1.5, 'sawtooth', 0.6);
+
+            const aNote = arpNotes[step % 64];
+            if (aNote) playTone(midiToFreq(aNote), time, tempo * 1.2, 'triangle', 0.2);
+
+            const mNote = melNotes[step % 64];
+            if (mNote) playTone(midiToFreq(mNote), time, tempo * 3, 'square', 0.25);
+
+            // Percussioni Doom
+            if (step % 8 === 0) playKick(time, 0.8);
+            if (step >= 32 && step % 8 === 4) playKick(time, 0.6);
+            if (step % 16 === 8) playNoise(time, 0.3, 0.2); 
+            if (step === 0 || step === 32) playNoise(time, 0.5, 0.8); 
+            if (step >= 32 && step % 2 === 0) playNoise(time, 0.04, 0.05); 
+        }
+
+        function scheduler() {
+            while (nextNoteTime < audioCtx.currentTime + 0.1) {
+                scheduleNote(currentStep, nextNoteTime);
+                nextNoteTime += tempo;
+                currentStep++;
+            }
+            timerID = setTimeout(scheduler, 25);
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+                masterGain = audioCtx.createGain();
+                
+                masterGain.gain.value = parseFloat(ui.volumeSlider.value); 
+                masterGain.connect(audioCtx.destination);
+            }
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (!isPlaying) {
+                isPlaying = true;
+                nextNoteTime = audioCtx.currentTime + 0.1;
+                scheduler();
+            }
+        }
+
+        function updateVolume() {
+            if (!audioCtx) return;
+            const currentVol = parseFloat(ui.volumeSlider.value);
+            if (!isMuted) {
+                masterGain.gain.setTargetAtTime(currentVol, audioCtx.currentTime, 0.1);
+            }
+        }
+
+        function toggleMute() {
+            if (!audioCtx) return;
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+                ui.iconUnmute.classList.add('hidden');
+                ui.iconMute.classList.remove('hidden');
+            } else {
+                masterGain.gain.setTargetAtTime(parseFloat(ui.volumeSlider.value), audioCtx.currentTime, 0.1);
+                ui.iconUnmute.classList.remove('hidden');
+                ui.iconMute.classList.add('hidden');
+            }
+        }
+
+        ui.btnMute.addEventListener('click', toggleMute);
+        ui.volumeSlider.addEventListener('input', updateVolume);
+
+        // ==========================================
+        // NAVIGATION E UI LOGIC
+        // ==========================================
+        function switchScreen(hideId, showId) {
+            if(showId === 'screen-reading') {
+                backgrounds.intro.classList.replace('opacity-100', 'opacity-0');
+                backgrounds.reading.classList.replace('opacity-0', 'opacity-100');
+                overlay.classList.replace('bg-[#050608]/80', 'bg-[#050608]/90'); 
+            } else {
+                backgrounds.reading.classList.replace('opacity-100', 'opacity-0');
+                backgrounds.intro.classList.replace('opacity-0', 'opacity-100');
+                overlay.classList.replace('bg-[#050608]/90', 'bg-[#050608]/80');
+            }
+
+            Object.values(screens).forEach(s => {
+                if(s.id !== showId) {
+                    s.classList.remove('opacity-100');
+                    s.classList.add('opacity-0', 'pointer-events-none');
+                    if(s.id === 'screen-level') s.classList.add('translate-y-8');
+                    if(s.id === 'screen-reading') s.classList.add('scale-95');
+                    
+                    setTimeout(() => { 
+                        if (s.id !== showId) s.classList.add('hidden'); 
+                    }, 700);
+                }
+            });
+
+            const target = Object.values(screens).find(s => s.id === showId);
+            target.classList.remove('hidden');
+
+            setTimeout(() => {
+                target.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-8', 'scale-95');
+                target.classList.add('opacity-100');
+                target.scrollTop = 0;
+            }, 50);
+        }
+
+        ui.btnScrollLeft.addEventListener('click', () => {
+            ui.carousel.scrollBy({ left: -450, behavior: 'smooth' });
+        });
+        ui.btnScrollRight.addEventListener('click', () => {
+            ui.carousel.scrollBy({ left: 450, behavior: 'smooth' });
+        });
+
+        function initCarousel() {
+            ui.carousel.innerHTML = '';
+            gameData.forEach((data, index) => {
+                const cardOuter = document.createElement('div');
+                cardOuter.className = `bg-[#050608]/50 backdrop-blur-md border border-[#4b5563]/40 shadow-2xl transition-all duration-300 hover:bg-[#050608]/95 hover:border-[#9ca3af] hover:scale-105 group snap-center cursor-pointer flex-shrink-0 w-80 md:w-96 lg:w-[26rem] active:scale-95 rounded-lg relative overflow-hidden`;
+                cardOuter.onclick = () => showReading(index);
+
+                cardOuter.innerHTML = `
+                    <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#4b5563]/50 group-hover:border-[#9ca3af] transition-colors duration-300"></div>
+                    <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#4b5563]/50 group-hover:border-[#9ca3af] transition-colors duration-300"></div>
+                    
+                    <div class="w-full h-full flex flex-col items-center justify-center text-center relative p-6 sm:p-10 min-h-[320px]">
+                        <div class="absolute inset-0 bg-gradient-to-t opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen ${data.theme.glow}"></div>
+                        
+                        <div class="font-epic text-sm font-bold tracking-[0.3em] uppercase mb-4 opacity-90 group-hover:opacity-100 transition-opacity">
+                            <span class="text-forged bg-gradient-to-b from-[#f1f5f9] to-[#9ca3af]">${data.signName}</span>
+                        </div>
+                        
+                        <h3 class="font-epic text-xl sm:text-2xl font-black uppercase tracking-widest relative z-10 transition-colors mb-8 leading-snug px-2 w-full break-words">
+                            <span class="text-forged bg-gradient-to-b from-[#e2e8f0] to-[#64748b] group-hover:from-[#ffffff] group-hover:to-[#cbd5e1]">${data.bossName}</span>
+                        </h3>
+                    </div>
+                `;
+                ui.carousel.appendChild(cardOuter);
+            });
+        }
+
+        function animateCounter(element, targetValue, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                element.textContent = Math.floor(progress * targetValue) + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    element.textContent = targetValue + '%';
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function showReading(index) {
+            const data = gameData[index];
+            
+            ui.rOuterBorder.className = `w-full max-w-5xl p-[4px] bg-gradient-to-b ${data.theme.borderGlow} to-[#0a0c10] shadow-[0_40px_80px_rgba(0,0,0,0.95)] transition-all duration-700 mb-16 overflow-hidden rounded-sm`;
+            ui.rCard.className = `w-full h-full dark-parchment p-8 sm:p-14 md:p-20 relative overflow-hidden flex flex-col rounded-sm`;
+            ui.rGlow.className = `absolute inset-0 bg-gradient-to-b ${data.theme.glow} opacity-20 pointer-events-none transition-colors duration-700 mix-blend-screen`;
+            
+            ui.rSign.innerHTML = `Segno di <span class="text-forged bg-gradient-to-b ${data.theme.metalGradient}">${data.signName}</span>`;
+            ui.rBoss.innerHTML = `<span class="text-forged bg-gradient-to-b from-[#ffffff] via-[#d1d5db] to-[#64748b]">${data.bossName}</span>`;
+            ui.rWeapon.innerHTML = `<span class="text-forged bg-gradient-to-b from-white to-[#cbd5e1]">${data.weapon}</span>`;
+            ui.rPowerup.innerHTML = `<span class="text-forged bg-gradient-to-b ${data.theme.metalGradient}">${data.powerUp}</span>`;
+            
+            ui.rLore.textContent = data.lore;
+            ui.rWeaponDesc.textContent = data.weaponDesc;
+            ui.rPowerupDesc.textContent = data.powerUpDesc;
+            
+            ui.rOutcome.innerHTML = data.outcome.replace(
+                /(VITTORIA SCHIACCIANTE|SCONFITTA INEVITABILE|STALLO STRATEGICO|SOPRAVVIVENZA|TRIONFO LUMINOSO|VITTORIA TATTICA|CADUTA LIBERA|DEMONE ESORCIZZATO|PRIGIONIA TEMPORANEA|VITTORIA ASSOLUTA|PATTO DI SANGUE|RISVEGLIO BRUTALE MA SALVIFICO|VITTORIA|TRIONFO|STALLO|RISVEGLIO SALVIFICO)\./g, 
+                `<span class="block mb-6 font-epic font-black tracking-widest text-3xl sm:text-4xl"><span class="text-forged bg-gradient-to-b ${data.theme.metalGradient}">$1.</span></span>`
+            );
+
+            ui.pBar.style.width = '0%';
+            ui.bBar.style.width = '0%';
+            ui.pTxt.textContent = '0%';
+            ui.bTxt.textContent = '0%';
+
+            switchScreen('screen-level', 'screen-reading');
+
+            setTimeout(() => {
+                ui.pBar.style.width = `${data.playerHp}%`;
+                ui.bBar.style.width = `${data.bossHp}%`;
+                
+                animateCounter(ui.pTxt, data.playerHp, 1000);
+                animateCounter(ui.bTxt, data.bossHp, 1000);
+
+                ui.pBar.className = `h-full bg-gradient-to-r ${data.theme.bar} transition-all duration-1000 w-[100%]`;
+
+            }, 750); 
+        }
+
+        document.getElementById('btn-start').addEventListener('click', () => {
+            initAudio(); 
+            document.getElementById('audio-controls').classList.remove('opacity-0', 'pointer-events-none');
+            switchScreen('screen-intro', 'screen-level');
+        });
+
+        document.getElementById('btn-back').addEventListener('click', () => {
+            switchScreen('screen-reading', 'screen-level');
+        });
+
+        initCarousel();
+
+    </script>
+</body>
+</html>
